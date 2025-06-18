@@ -159,7 +159,6 @@ const App: React.FC = () => {
         );
       
       case 'admin':
-        // Apenas admin pode ver esta tela
         if (userType !== 'admin') {
           return <LoginView onLogin={handleLogin} />;
         }
@@ -224,7 +223,7 @@ const App: React.FC = () => {
         <footer className="bg-white border-t border-gray-200 p-4 mt-8">
           <div className="max-w-7xl mx-auto text-center">
             <p className="text-gray-600 text-sm">
-              © 2025 Lava-Jato Santa Mônica - Sistema SaaS de Gerenciamento
+              © 2025 Schema Desenvolvimento - Sistema SaaS de Gerenciamento de Lava jatos e oficinas.
             </p>
             <p className="text-gray-500 text-xs mt-1">
               {userType === 'admin' ? 'Painel Administrativo' : 'Portal do Cliente'} • 

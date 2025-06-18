@@ -36,7 +36,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }): React.ReactElement =>
           <div className="bg-indigo-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <Car className="text-white text-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Lava-Jato Santa Mônica</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Lava-Jato </h1>
           <p className="text-gray-600">Sistema de Gerenciamento SaaS</p>
         </div>
 

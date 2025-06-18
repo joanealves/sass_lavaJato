@@ -1,7 +1,25 @@
 import React, { useState } from 'react';
-import { Eye, Clock, Car, CheckCircle, Search } from 'lucide-react';
+import { Eye, Clock, Car, CheckCircle, Search, MessageCircle, Copy, Phone, ExternalLink, AlertCircle } from 'lucide-react';
 
-import { Order, OrderStatus } from '../types/types'; 
+enum OrderStatus {
+  WAITING = 'WAITING',
+  IN_PROGRESS = 'IN_PROGRESS', 
+  READY = 'READY',
+  COMPLETED = 'COMPLETED'
+}
+
+interface Order {
+  id: string;
+  customerName: string;
+  phone: string;
+  serviceType: string;
+  carModel: string;
+  carPlate: string;
+  extraServices: string[];
+  status: OrderStatus;
+  createdAt: Date | string;
+  readyAt?: Date | string | null;
+}
 
 interface ServiceType {
   id: string;
@@ -35,7 +53,16 @@ const extraServices: ExtraService[] = [
   { id: 'pneus', name: 'Pretinho nos Pneus', price: 'R$ 8,00', needsApproval: false }
 ];
 
+// Função para gerar link do WhatsApp
+const generateWhatsAppLink = (phone: string, message: string): string => {
+  const cleanPhone = phone.replace(/\D/g, '');
+  const formattedPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+  return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+};
+
 const OrderTrackingDetails: React.FC<{ order: Order }> = ({ order }) => {
+  const [showNotifications, setShowNotifications] = useState(false);
+
   const getStatusProgress = (status: OrderStatus): number => { 
     switch (status) {
       case OrderStatus.WAITING: return 25;
@@ -92,45 +119,170 @@ const OrderTrackingDetails: React.FC<{ order: Order }> = ({ order }) => {
     return `Tempo estimado: ${totalMinutes} minutos`;
   };
 
+  const copyOrderCode = () => {
+    navigator.clipboard.writeText(order.id);
+    alert('Código do pedido copiado!');
+  };
+
+  const generateStatusMessage = (status: OrderStatus): string => {
+    const selectedService = serviceTypes.find(s => s.id === order.serviceType);
+    const selectedExtras = extraServices.filter(e => order.extraServices.includes(e.id));
+
+    const statusMessages = {
+      [OrderStatus.WAITING]: `🕐 *Pedido em Fila - ${order.id}*
+
+Olá ${order.customerName}! Seu pedido está na fila de espera.
+
+📋 *Status:* Aguardando início
+🚙 *Veículo:* ${order.carModel} ${order.carPlate ? `(${order.carPlate})` : ''}
+⏱️ *Previsão:* ${getEstimatedTime(order)}
+
+Você será notificado quando iniciarmos o serviço!
+
+🏪 *Lava-Jato Santa Mônica*
+📞 (11) 99999-9999`,
+
+      [OrderStatus.IN_PROGRESS]: `🚗 *Serviço Iniciado - ${order.id}*
+
+${order.customerName}, começamos a lavagem do seu veículo!
+
+📋 *Status:* Em andamento
+🧽 *Serviço:* ${selectedService?.name}
+⏱️ *Tempo restante:* Aproximadamente ${selectedService?.duration} minutos
+
+Você será notificado quando estiver pronto!
+
+🏪 *Lava-Jato Santa Mônica*
+📞 (11) 99999-9999`,
+
+      [OrderStatus.READY]: `✅ *Veículo Pronto - ${order.id}*
+
+🎉 ${order.customerName}, seu veículo está pronto para retirada!
+
+🚙 *Veículo:* ${order.carModel} ${order.carPlate ? `(${order.carPlate})` : ''}
+📍 *Local:* Lava-Jato Santa Mônica
+📞 *Contato:* (11) 99999-9999
+
+⚠️ *Importante:* Retire em até 2 horas para evitar taxa de estacionamento.
+
+Venha buscar quando puder! 🚗💨
+
+🏪 *Lava-Jato Santa Mônica*`,
+
+      [OrderStatus.COMPLETED]: `🏁 *Serviço Finalizado - ${order.id}*
+
+Obrigado ${order.customerName}! 
+
+✅ Serviço concluído com sucesso
+⭐ Que tal avaliar nosso atendimento?
+🔄 Volte sempre que precisar
+
+📱 *Próxima lavagem:* Mande mensagem direto no WhatsApp
+🎁 *Dica:* Cliente frequente ganha desconto!
+
+🏪 *Lava-Jato Santa Mônica*
+📞 (11) 99999-9999`
+    };
+
+    return statusMessages[status];
+  };
+
+  const sendStatusNotification = () => {
+    const message = generateStatusMessage(order.status);
+    const whatsappLink = generateWhatsAppLink(order.phone, message);
+    window.open(whatsappLink, '_blank');
+  };
+
   return (
-    <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
-      <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Pedido #{order.id}</h3>
-        <p className="text-gray-600">Olá, {order.customerName || 'Cliente'}!</p>
-      </div>
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <h3 className="text-2xl font-bold text-gray-800">Pedido {order.id}</h3>
+            <button
+              onClick={copyOrderCode}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Copiar código"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          </div>
+          <p className="text-gray-600">Olá, {order.customerName || 'Cliente'}!</p>
+        </div>
 
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm text-gray-600">Progresso</span>
-          <span className="text-sm font-semibold text-gray-800">{getStatusText(order.status)}</span>
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm text-gray-600">Progresso</span>
+            <span className="text-sm font-semibold text-gray-800">{getStatusText(order.status)}</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-3">
+            <div 
+              className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(order.status)}`}
+              style={{ width: `${getStatusProgress(order.status)}%` }}
+            ></div>
+          </div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
-          <div 
-            className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(order.status)}`}
-            style={{ width: `${getStatusProgress(order.status)}%` }}
-          ></div>
-        </div>
-      </div>
 
-      <div className="bg-white rounded-lg p-6 mb-6 text-center">
-        <div className="mb-4">
-          {getStatusIcon(order.status)}
+        <div className="bg-white rounded-lg p-6 mb-6 text-center">
+          <div className="mb-4">
+            {getStatusIcon(order.status)}
+          </div>
+          <h4 className="text-xl font-bold text-gray-800 mb-2">
+            Status: {getStatusText(order.status)}
+          </h4>
+          <p className="text-gray-600 mb-4">{getEstimatedTime(order)}</p>
+          
+          {order.status === OrderStatus.READY && (
+            <div className="bg-green-100 border border-green-300 rounded-lg p-4 mb-4">
+              <div className="text-green-800 font-semibold text-lg">🎉 Seu carro está pronto!</div>
+              <div className="text-green-700 text-sm">Pode vir buscar no Lava-Jato Santa Mônica</div>
+            </div>
+          )}
+
+          <div className="flex gap-2 justify-center flex-wrap">
+            <button
+              onClick={sendStatusNotification}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Enviar por WhatsApp
+            </button>
+            
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <Phone className="w-4 h-4" />
+              Ver Todas as Notificações
+            </button>
+          </div>
         </div>
-        <h4 className="text-xl font-bold text-gray-800 mb-2">
-          Status: {getStatusText(order.status)}
-        </h4>
-        <p className="text-gray-600 mb-2">{getEstimatedTime(order)}</p>
-        
-        {order.status === OrderStatus.READY && ( 
-          <div className="bg-green-100 border border-green-300 rounded-lg p-4 mt-4">
-            <div className="text-green-800 font-semibold text-lg">🎉 Seu carro está pronto!</div>
-            <div className="text-green-700 text-sm">Pode vir buscar no Lava-Jato Santa Mônica</div>
+
+        {showNotifications && (
+          <div className="bg-white rounded-lg p-4 mb-6">
+            <h4 className="font-semibold text-gray-700 mb-3">Notificações Disponíveis</h4>
+            <div className="space-y-2">
+              {Object.values(OrderStatus).map((status) => (
+                <button
+                  key={status}
+                  onClick={() => {
+                    const message = generateStatusMessage(status);
+                    const whatsappLink = generateWhatsAppLink(order.phone, message);
+                    window.open(whatsappLink, '_blank');
+                  }}
+                  className="w-full text-left p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <div className="font-medium text-gray-800">{getStatusText(status)}</div>
+                  <div className="text-sm text-gray-600">Enviar notificação de {getStatusText(status).toLowerCase()}</div>
+                </button>
+              ))}
+            </div>
           </div>
         )}
-      </div>
 
-      <OrderTimeline order={order} />
-      <OrderServiceDetails order={order} />
+        <OrderTimeline order={order} />
+        <OrderServiceDetails order={order} />
+      </div>
     </div>
   );
 };
@@ -186,9 +338,9 @@ const OrderTimeline: React.FC<{ order: Order }> = ({ order }) => {
         <div className={`flex items-center gap-3 p-3 rounded-lg ${order.status === OrderStatus.COMPLETED ? 'bg-gray-100 border border-gray-200' : 'bg-gray-50'}`}>
           <div className={`w-3 h-3 rounded-full ${order.status === OrderStatus.COMPLETED ? 'bg-gray-500' : 'bg-gray-300'}`}></div>
           <div>
-            <div className="font-medium text-gray-800">Carro Retirado</div>
+            <div className="font-medium text-gray-800">Pedido Finalizado</div>
             <div className="text-sm text-gray-600">
-              {order.status === OrderStatus.COMPLETED ? 'Pedido finalizado' : 'Aguardando retirada'}
+              {order.status === OrderStatus.COMPLETED ? 'Concluído' : 'Aguardando'}
             </div>
           </div>
         </div>
@@ -197,187 +349,250 @@ const OrderTimeline: React.FC<{ order: Order }> = ({ order }) => {
   );
 };
 
-const OrderServiceDetails: React.FC<{ order: Order }> = ({ order }) => { 
-  const getServiceName = (serviceId: string): string => {
-    const service = serviceTypes.find(s => s.id === serviceId);
-    return service ? service.name : 'Serviço não encontrado';
-  };
-
-  const getExtraServicesNames = (extraServiceIds: string[] | undefined): string => {
-    if (!Array.isArray(extraServiceIds) || extraServiceIds.length === 0) {
-      return 'Nenhum serviço extra';
-    }
-    
-    return extraServiceIds.map(id => {
-      const service = extraServices.find(s => s.id === id);
-      return service ? service.name : 'Serviço não encontrado';
-    }).join(', ');
-  };
+const OrderServiceDetails: React.FC<{ order: Order }> = ({ order }) => {
+  const selectedService = serviceTypes.find(s => s.id === order.serviceType);
+  const selectedExtras = extraServices.filter(e => order.extraServices.includes(e.id));
 
   return (
     <div className="bg-white rounded-lg p-4">
       <h4 className="font-semibold text-gray-700 mb-3">Detalhes do Serviço</h4>
-      <div className="text-sm text-gray-600 space-y-1">
-        <div><strong>Serviço:</strong> {getServiceName(order.serviceType)}</div>
-        <div><strong>Contato:</strong> {order.phone || 'Não informado'}</div> 
-        <div><strong>Veículo:</strong> {order.carModel || 'Não informado'} {order.carPlate && `(${order.carPlate})`}</div>
-        <div><strong>Extras:</strong> {getExtraServicesNames(order.extraServices)}</div>
+      
+      <div className="space-y-3">
+        <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+          <div>
+            <div className="font-medium text-gray-800">{selectedService?.name || 'Serviço não encontrado'}</div>
+            <div className="text-sm text-gray-600">Serviço principal</div>
+          </div>
+          <div className="text-blue-600 font-semibold">{selectedService?.price}</div>
+        </div>
+
+        {selectedExtras.length > 0 && (
+          <div>
+            <div className="text-sm font-medium text-gray-700 mb-2">Serviços Adicionais:</div>
+            {selectedExtras.map((extra) => (
+              <div key={extra.id} className="flex justify-between items-center p-2 bg-green-50 rounded-lg mb-1">
+                <div>
+                  <div className="font-medium text-gray-800 text-sm">{extra.name}</div>
+                  {extra.needsApproval && (
+                    <div className="text-xs text-orange-600">Precisa aprovação</div>
+                  )}
+                </div>
+                <div className="text-green-600 font-semibold text-sm">{extra.price}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="border-t pt-3">
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-800">Informações do Veículo:</span>
+          </div>
+          <div className="text-sm text-gray-600 mt-1">
+            <div>Modelo: {order.carModel || 'Não informado'}</div>
+            {order.carPlate && <div>Placa: {order.carPlate}</div>}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-const TrackingView: React.FC<TrackingViewProps> = ({ orders = [] }) => {
-  const [searchOrderId, setSearchOrderId] = useState<string>('');
-  const [foundOrder, setFoundOrder] = useState<Order | null>(null);
+const TrackingView: React.FC<TrackingViewProps> = ({ orders }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const searchOrder = (): void => {
-    if (!searchOrderId.trim()) {
-      alert('Digite o número do pedido!');
-      return;
-    }
-    
-    let found = orders.find(o => o.id === searchOrderId.trim());
+  const filteredOrders = orders.filter(order => 
+    order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.carModel.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.carPlate.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    if (!found) {
-      found = sampleOrders.find(o => o.id === searchOrderId.trim());
-    }
-
-    setFoundOrder(found || null);
-    if (!found) {
-      alert('Pedido não encontrado! Verifique o número digitado.');
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === 'Enter') {
-      searchOrder();
+  const getStatusColor = (status: OrderStatus): string => {
+    switch (status) {
+      case OrderStatus.WAITING: return 'bg-yellow-100 border-yellow-300 text-yellow-800';
+      case OrderStatus.IN_PROGRESS: return 'bg-blue-100 border-blue-300 text-blue-800';
+      case OrderStatus.READY: return 'bg-green-100 border-green-300 text-green-800';
+      case OrderStatus.COMPLETED: return 'bg-gray-100 border-gray-300 text-gray-800';
+      default: return 'bg-gray-100 border-gray-300 text-gray-800';
     }
   };
 
+  const getStatusText = (status: OrderStatus): string => {
+    switch (status) {
+      case OrderStatus.WAITING: return 'Aguardando';
+      case OrderStatus.IN_PROGRESS: return 'Em Andamento';
+      case OrderStatus.READY: return 'Pronto';
+      case OrderStatus.COMPLETED: return 'Finalizado';
+      default: return status;
+    }
+  };
+
+  if (selectedOrder) {
+    return (
+      <div className="max-w-4xl mx-auto p-4">
+        <div className="mb-6">
+          <button
+            onClick={() => setSelectedOrder(null)}
+            className="text-blue-600 hover:text-blue-800 flex items-center gap-2"
+          >
+            ← Voltar para lista de pedidos
+          </button>
+        </div>
+        <OrderTrackingDetails order={selectedOrder} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto p-4">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Rastreamento de Pedidos</h1>
+        <p className="text-gray-600">Acompanhe o status dos serviços em tempo real</p>
+      </div>
+
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="Buscar por código, cliente, modelo ou placa..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+      </div>
+
+      {filteredOrders.length === 0 ? (
+        <div className="text-center py-12">
+          <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-600 mb-2">Nenhum pedido encontrado</h3>
+          <p className="text-gray-500">
+            {searchTerm ? 'Tente ajustar sua pesquisa' : 'Ainda não há pedidos para rastrear'}
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {filteredOrders.map((order) => (
+            <div
+              key={order.id}
+              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => setSelectedOrder(order)}
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="font-bold text-gray-800">#{order.id}</h3>
+                  <p className="text-sm text-gray-600">{order.customerName}</p>
+                </div>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
+                  {getStatusText(order.status)}
+                </span>
+              </div>
+
+              <div className="space-y-2 text-sm text-gray-600 mb-4">
+                <div className="flex items-center gap-2">
+                  <Car className="w-4 h-4" />
+                  <span>{order.carModel}</span>
+                  {order.carPlate && <span className="text-gray-400">({order.carPlate})</span>}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>
+                    {typeof order.createdAt === 'string' 
+                      ? new Date(order.createdAt).toLocaleDateString('pt-BR')
+                      : order.createdAt.toLocaleDateString('pt-BR')
+                    }
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedOrder(order);
+                  }}
+                  className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-sm"
+                >
+                  <Eye className="w-4 h-4" />
+                  Ver detalhes
+                </button>
+                
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const message = `🚗 *Lava-Jato Santa Mônica*
+
+Olá! Gostaria de acompanhar o status do pedido ${order.id}.
+
+Pode me passar uma atualização?
+
+Obrigado!`;
+                    const whatsappLink = generateWhatsAppLink(order.phone, message);
+                    window.open(whatsappLink, '_blank');
+                  }}
+                  className="text-green-600 hover:text-green-800 flex items-center gap-1 text-sm"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  WhatsApp
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Componente principal para demonstração
+const App: React.FC = () => {
+  // Dados de exemplo para demonstração
   const sampleOrders: Order[] = [
     {
-      id: '1', 
+      id: 'LJ001',
       customerName: 'João Silva',
-      phone: '11987654321', 
+      phone: '11999999999',
       serviceType: 'completa',
       carModel: 'Honda Civic',
       carPlate: 'ABC-1234',
       extraServices: ['cera', 'aspiracao'],
-      status: OrderStatus.IN_PROGRESS, 
-      createdAt: new Date(2025, 5, 18, 10, 30),
+      status: OrderStatus.IN_PROGRESS,
+      createdAt: new Date('2024-03-15T10:00:00'),
       readyAt: null
     },
     {
-      id: '2', 
+      id: 'LJ002',
       customerName: 'Maria Santos',
-      phone: '21998765432', 
+      phone: '11888888888',
       serviceType: 'premium',
       carModel: 'Toyota Corolla',
-      carPlate: 'XYZ-9876',
+      carPlate: 'XYZ-5678',
       extraServices: ['motor', 'pneus'],
-      status: OrderStatus.READY, 
-      createdAt: new Date(2025, 5, 18, 9, 15),
-      readyAt: new Date(2025, 5, 18, 11, 45)
+      status: OrderStatus.READY,
+      createdAt: new Date('2024-03-15T09:30:00'),
+      readyAt: new Date('2024-03-15T11:15:00')
     },
     {
-      id: '3', 
-      customerName: 'Pedro Costa',
-      phone: '31976543210', 
+      id: 'LJ003',
+      customerName: 'Carlos Oliveira',
+      phone: '11777777777',
       serviceType: 'simples',
       carModel: 'Volkswagen Gol',
-      carPlate: 'DEF-5678',
+      carPlate: 'DEF-9012',
       extraServices: [],
-      status: OrderStatus.WAITING, 
-      createdAt: new Date(2025, 5, 18, 11, 0),
+      status: OrderStatus.WAITING,
+      createdAt: new Date('2024-03-15T11:00:00'),
       readyAt: null
     }
   ];
 
- 
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-          <div className="text-center mb-8">
-            <div className="bg-purple-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Eye className="text-white text-2xl" />
-            </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">Acompanhar Pedido</h2>
-            <p className="text-gray-600">Digite o número do seu pedido para ver o andamento</p>
-          </div>
-
-          <div className="space-y-6">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={searchOrderId}
-                onChange={(e) => setSearchOrderId(e.target.value)}
-                className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="Digite o número do pedido (ex: 1, 2, 3...)"
-                onKeyPress={handleKeyPress}
-              />
-              <button
-                onClick={searchOrder}
-                className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
-              >
-                <Search className="w-5 h-5" />
-                Buscar
-              </button>
-            </div>
-
-            {foundOrder === null && searchOrderId && (
-              <div className="text-center py-8">
-                <div className="text-gray-400 mb-2">
-                  <Search className="w-12 h-12 mx-auto" />
-                </div>
-                <p className="text-gray-600">Pedido não encontrado</p>
-                <p className="text-sm text-gray-500">Verifique se o número está correto</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {foundOrder && (
-          <OrderTrackingDetails order={foundOrder} />
-        )}
-
-        {!foundOrder && !searchOrderId && (
-          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            <div className="text-gray-400 mb-4">
-              <Eye className="w-16 h-16 mx-auto" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Como acompanhar seu pedido</h3>
-            <div className="text-gray-600 text-left max-w-md mx-auto space-y-2">
-              <p>• Você recebeu um número de pedido após fazer o cadastro</p>
-              <p>• Digite esse número no campo acima</p>
-              <p>• Acompanhe o status em tempo real</p>
-              <p>• Você receberá notificações por WhatsApp</p>
-            </div>
-            
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-700 font-medium mb-2">Para testar, use um destes números:</p>
-              <div className="flex gap-2 justify-center flex-wrap"> 
-                {sampleOrders.map(order => (
-                  <button
-                    key={order.id}
-                    onClick={() => {
-                      setSearchOrderId(order.id.toString());
-                      setFoundOrder(order);
-                    }}
-                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 transition-colors"
-                  >
-                    #{order.id}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <TrackingView orders={sampleOrders} />
     </div>
   );
 };
 
-export default TrackingView;
+export default App;
