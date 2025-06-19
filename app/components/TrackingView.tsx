@@ -1,43 +1,6 @@
 import React, { useState } from 'react';
-import { Eye, Clock, Car, CheckCircle, Search, MessageCircle, Copy, Phone, ExternalLink, AlertCircle } from 'lucide-react';
-
-enum OrderStatus {
-  WAITING = 'WAITING',
-  IN_PROGRESS = 'IN_PROGRESS', 
-  READY = 'READY',
-  COMPLETED = 'COMPLETED'
-}
-
-interface Order {
-  id: string;
-  customerName: string;
-  phone: string;
-  serviceType: string;
-  carModel: string;
-  carPlate: string;
-  extraServices: string[];
-  status: OrderStatus;
-  createdAt: Date | string;
-  readyAt?: Date | string | null;
-}
-
-interface ServiceType {
-  id: string;
-  name: string;
-  price: string;
-  duration: number;
-}
-
-interface ExtraService {
-  id: string;
-  name: string;
-  price: string;
-  needsApproval: boolean;
-}
-
-interface TrackingViewProps {
-  orders: Order[]; 
-}
+import { Eye, Clock, Car, CheckCircle, Search, MessageCircle, Copy, Phone, AlertCircle } from 'lucide-react';
+import { Order, OrderStatus, ServiceType, ExtraService, TrackingViewProps } from '../types/types';
 
 const serviceTypes: ServiceType[] = [
   { id: 'simples', name: 'Lavagem Simples', price: 'R$ 15,00', duration: 30 },
@@ -53,7 +16,6 @@ const extraServices: ExtraService[] = [
   { id: 'pneus', name: 'Pretinho nos Pneus', price: 'R$ 8,00', needsApproval: false }
 ];
 
-// Função para gerar link do WhatsApp
 const generateWhatsAppLink = (phone: string, message: string): string => {
   const cleanPhone = phone.replace(/\D/g, '');
   const formattedPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
@@ -126,7 +88,6 @@ const OrderTrackingDetails: React.FC<{ order: Order }> = ({ order }) => {
 
   const generateStatusMessage = (status: OrderStatus): string => {
     const selectedService = serviceTypes.find(s => s.id === order.serviceType);
-    const selectedExtras = extraServices.filter(e => order.extraServices.includes(e.id));
 
     const statusMessages = {
       [OrderStatus.WAITING]: `🕐 *Pedido em Fila - ${order.id}*
@@ -139,7 +100,7 @@ Olá ${order.customerName}! Seu pedido está na fila de espera.
 
 Você será notificado quando iniciarmos o serviço!
 
-🏪 *Lava-Jato Santa Mônica*
+🏪 *Lava-Jato*
 📞 (11) 99999-9999`,
 
       [OrderStatus.IN_PROGRESS]: `🚗 *Serviço Iniciado - ${order.id}*
@@ -152,7 +113,7 @@ ${order.customerName}, começamos a lavagem do seu veículo!
 
 Você será notificado quando estiver pronto!
 
-🏪 *Lava-Jato Santa Mônica*
+🏪 *Lava-Jato*
 📞 (11) 99999-9999`,
 
       [OrderStatus.READY]: `✅ *Veículo Pronto - ${order.id}*
@@ -160,14 +121,14 @@ Você será notificado quando estiver pronto!
 🎉 ${order.customerName}, seu veículo está pronto para retirada!
 
 🚙 *Veículo:* ${order.carModel} ${order.carPlate ? `(${order.carPlate})` : ''}
-📍 *Local:* Lava-Jato Santa Mônica
+📍 *Local:* Lava-Jato 
 📞 *Contato:* (11) 99999-9999
 
 ⚠️ *Importante:* Retire em até 2 horas para evitar taxa de estacionamento.
 
 Venha buscar quando puder! 🚗💨
 
-🏪 *Lava-Jato Santa Mônica*`,
+🏪 *Lava-Jato*`,
 
       [OrderStatus.COMPLETED]: `🏁 *Serviço Finalizado - ${order.id}*
 
@@ -180,7 +141,7 @@ Obrigado ${order.customerName}!
 📱 *Próxima lavagem:* Mande mensagem direto no WhatsApp
 🎁 *Dica:* Cliente frequente ganha desconto!
 
-🏪 *Lava-Jato Santa Mônica*
+🏪 *Lava-Jato*
 📞 (11) 99999-9999`
     };
 
@@ -235,7 +196,7 @@ Obrigado ${order.customerName}!
           {order.status === OrderStatus.READY && (
             <div className="bg-green-100 border border-green-300 rounded-lg p-4 mb-4">
               <div className="text-green-800 font-semibold text-lg">🎉 Seu carro está pronto!</div>
-              <div className="text-green-700 text-sm">Pode vir buscar no Lava-Jato Santa Mônica</div>
+              <div className="text-green-700 text-sm">Pode vir buscar no Lava-Jato </div>
             </div>
           )}
 
@@ -288,12 +249,8 @@ Obrigado ${order.customerName}!
 };
 
 const OrderTimeline: React.FC<{ order: Order }> = ({ order }) => {
-  const formatDate = (date: Date | string | undefined | null): string => {
+  const formatDate = (date: Date | null | undefined): string => {
     if (!date) return 'Data não disponível';
-    
-    if (typeof date === 'string') {
-      return new Date(date).toLocaleString('pt-BR');
-    }
     
     if (date instanceof Date) {
       return date.toLocaleString('pt-BR');
@@ -498,12 +455,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ orders }) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
-                  <span>
-                    {typeof order.createdAt === 'string' 
-                      ? new Date(order.createdAt).toLocaleDateString('pt-BR')
-                      : order.createdAt.toLocaleDateString('pt-BR')
-                    }
-                  </span>
+                  <span>{order.createdAt.toLocaleDateString('pt-BR')}</span>
                 </div>
               </div>
 
@@ -522,7 +474,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ orders }) => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    const message = `🚗 *Lava-Jato Santa Mônica*
+                    const message = `🚗 *Lava-Jato*
 
 Olá! Gostaria de acompanhar o status do pedido ${order.id}.
 
@@ -546,53 +498,4 @@ Obrigado!`;
   );
 };
 
-// Componente principal para demonstração
-const App: React.FC = () => {
-  // Dados de exemplo para demonstração
-  const sampleOrders: Order[] = [
-    {
-      id: 'LJ001',
-      customerName: 'João Silva',
-      phone: '11999999999',
-      serviceType: 'completa',
-      carModel: 'Honda Civic',
-      carPlate: 'ABC-1234',
-      extraServices: ['cera', 'aspiracao'],
-      status: OrderStatus.IN_PROGRESS,
-      createdAt: new Date('2024-03-15T10:00:00'),
-      readyAt: null
-    },
-    {
-      id: 'LJ002',
-      customerName: 'Maria Santos',
-      phone: '11888888888',
-      serviceType: 'premium',
-      carModel: 'Toyota Corolla',
-      carPlate: 'XYZ-5678',
-      extraServices: ['motor', 'pneus'],
-      status: OrderStatus.READY,
-      createdAt: new Date('2024-03-15T09:30:00'),
-      readyAt: new Date('2024-03-15T11:15:00')
-    },
-    {
-      id: 'LJ003',
-      customerName: 'Carlos Oliveira',
-      phone: '11777777777',
-      serviceType: 'simples',
-      carModel: 'Volkswagen Gol',
-      carPlate: 'DEF-9012',
-      extraServices: [],
-      status: OrderStatus.WAITING,
-      createdAt: new Date('2024-03-15T11:00:00'),
-      readyAt: null
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <TrackingView orders={sampleOrders} />
-    </div>
-  );
-};
-
-export default App;
+export default TrackingView;

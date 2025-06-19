@@ -1,25 +1,8 @@
 import React, { useState } from 'react';
 import { User, Clock, Car, CheckCircle, Phone, Trash2, MessageCircle } from 'lucide-react';
+import { Order, OrderStatus, AdminViewProps } from '../types/types';
 
-export enum OrderStatus {
-  WAITING = 'waiting',
-  IN_PROGRESS = 'inProgress',
-  READY = 'ready',
-  COMPLETED = 'completed',
-}
 
-export interface Order {
-  id: string;
-  customerName: string;
-  phone: string;
-  carModel: string;
-  carPlate: string;
-  serviceType: string;
-  extraServices: string[];
-  status: OrderStatus;
-  createdAt: Date;
-  readyAt: Date | null;
-}
 
 export interface Service {
   id: string;
@@ -63,12 +46,6 @@ interface OrderCardProps {
   onUpdateStatus: (orderId: string, newStatus: OrderStatus) => void;
   onDeleteOrder: (orderId: string) => void;
   onSendWhatsApp: (order: Order) => void;
-}
-
-interface AdminViewProps {
-  orders: Order[];
-  onUpdateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
-  onDeleteOrder: (orderId: string) => void;
 }
 
 const getStatusColor = (status: OrderStatus): string => {

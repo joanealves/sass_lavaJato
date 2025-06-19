@@ -78,8 +78,20 @@ const App: React.FC = () => {
       return;
     }
 
+    // Gerar código do pedido
+    const generateOrderCode = (): string => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timestamp = now.getTime().toString().slice(-6);
+      return `LJ${year}${month}${day}${hours}${minutes}${timestamp}`;
+    };
+
     const newOrder: Order = {
-      id: orderCounter.toString(), 
+      id: generateOrderCode(), // Usar código gerado em vez de contador
       customerName: currentOrder.customerName.trim(),
       phone: currentOrder.phone.trim(),
       carModel: currentOrder.carModel.trim() || 'Não informado',

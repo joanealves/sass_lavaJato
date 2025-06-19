@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Car, User, Phone, Plus, Copy, MessageCircle, Check } from 'lucide-react';
+import { Car, User, Phone, Copy, MessageCircle, Check } from 'lucide-react';
+import { CurrentOrder, CustomerViewProps } from '../types/types';
 
 interface ServiceType {
   id: string;
@@ -13,21 +14,6 @@ interface ExtraService {
   name: string;
   price: string;
   needsApproval: boolean;
-}
-
-interface Order {
-  customerName: string;
-  phone: string;
-  carModel: string;
-  carPlate: string;
-  serviceType: string;
-  extraServices: string[];
-}
-
-interface CustomerViewProps {
-  currentOrder: Order;
-  setCurrentOrder: React.Dispatch<React.SetStateAction<Order>>;
-  onSubmitOrder: () => void;
 }
 
 const serviceTypes: ServiceType[] = [
@@ -44,127 +30,9 @@ const extraServices: ExtraService[] = [
   { id: 'pneus', name: 'Pretinho nos Pneus', price: 'R$ 8,00', needsApproval: false }
 ];
 
-// Utilitário para gerar códigos de pedido
-const generateOrderCode = (orderCount: number = 0): string => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  
-  // Gera um código único baseado em timestamp
-  const timestamp = now.getTime().toString().slice(-6);
-  
-  return `LJ${year}${month}${day}${hours}${minutes}${timestamp}`;
-};
-
-// Função para validar código de pedido
-export const isValidOrderCode = (code: string): boolean => {
-  if (!code || typeof code !== 'string') return false;
-  
-  // Verifica se começa com LJ e tem tamanho adequado
-  return code.startsWith('LJ') && code.length >= 8 && code.length <= 15;
-};
-
-// Função para formatar código para exibição
-export const formatOrderCodeForDisplay = (code: string): string => {
-  if (!code || typeof code !== 'string') return '';
-  
-  // Se for um código válido, formata para exibição
-  if (isValidOrderCode(code)) {
-    // Adiciona espaços para melhor legibilidade
-    return code.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
-  }
-  
-  return code;
-};
-
-// Componente para mostrar o pedido criado
-const OrderCreatedModal: React.FC<{
-  orderCode: string;
-  customerName: string;
-  onClose: () => void;
-  onGoToTracking: () => void;
-}> = ({ orderCode, customerName, onClose, onGoToTracking }) => {
-  const [copied, setCopied] = useState(false);
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(orderCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
-        <div className="text-center">
-          <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Car className="text-green-600 text-2xl" />
-          </div>
-          
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            🎉 Pedido Criado!
-          </h3>
-          
-          <p className="text-gray-600 mb-6">
-            Olá {customerName}! Seu pedido foi registrado com sucesso.
-          </p>
-
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Código do seu pedido:
-            </label>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 bg-white border border-gray-300 rounded-lg p-3 font-mono text-lg font-bold text-center">
-                {orderCode}
-              </div>
-              <button
-                onClick={copyToClipboard}
-                className="bg-blue-600 text-white px-3 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-                title="Copiar código"
-              >
-                <Copy className="w-5 h-5" />
-              </button>
-            </div>
-            {copied && (
-              <p className="text-green-600 text-sm mt-2 flex items-center justify-center gap-1">
-                <Copy className="w-4 h-4" />
-                Código copiado!
-              </p>
-            )}
-          </div>
-
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-yellow-800">
-              <strong>📱 Importante:</strong> Guarde este código! Você precisará dele para acompanhar seu pedido e receberá notificações no WhatsApp.
-            </p>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={onGoToTracking}
-              className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-            >
-              <MessageCircle className="w-4 h-4" />
-              Acompanhar Pedido
-            </button>
-            <button
-              onClick={onClose}
-              className="flex-1 bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Novo Pedido
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const ServiceTypeSelector: React.FC<{
-  currentOrder: Order;
-  setCurrentOrder: React.Dispatch<React.SetStateAction<Order>>;
+  currentOrder: CurrentOrder;
+  setCurrentOrder: React.Dispatch<React.SetStateAction<CurrentOrder>>;
 }> = ({ currentOrder, setCurrentOrder }) => {
   return (
     <div>
@@ -198,8 +66,8 @@ const ServiceTypeSelector: React.FC<{
 };
 
 const ExtraServicesSelector: React.FC<{
-  currentOrder: Order;
-  setCurrentOrder: React.Dispatch<React.SetStateAction<Order>>;
+  currentOrder: CurrentOrder;
+  setCurrentOrder: React.Dispatch<React.SetStateAction<CurrentOrder>>;
 }> = ({ currentOrder, setCurrentOrder }) => {
   const toggleExtraService = (serviceId: string) => {
     setCurrentOrder(prev => ({
@@ -254,8 +122,8 @@ const ExtraServicesSelector: React.FC<{
 };
 
 const CustomerForm: React.FC<{
-  currentOrder: Order;
-  setCurrentOrder: React.Dispatch<React.SetStateAction<Order>>;
+  currentOrder: CurrentOrder;
+  setCurrentOrder: React.Dispatch<React.SetStateAction<CurrentOrder>>;
 }> = ({ currentOrder, setCurrentOrder }) => {
   return (
     <div className="space-y-4">
@@ -270,21 +138,21 @@ const CustomerForm: React.FC<{
           type="text"
           value={currentOrder.customerName}
           onChange={(e) => setCurrentOrder(prev => ({...prev, customerName: e.target.value}))}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-3 border text-gray-950 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Digite seu nome completo"
         />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          <Phone className="w-4 h-4 inline mr-2" />
+          <Phone className="w-4 h-4 inline mr-2 " />
           WhatsApp *
         </label>
         <input
           type="tel"
           value={currentOrder.phone}
           onChange={(e) => setCurrentOrder(prev => ({...prev, phone: e.target.value}))}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-3 border  text-gray-950 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="(11) 99999-9999"
         />
       </div>
@@ -298,7 +166,7 @@ const CustomerForm: React.FC<{
           type="text"
           value={currentOrder.carModel}
           onChange={(e) => setCurrentOrder(prev => ({...prev, carModel: e.target.value}))}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-3 border  text-gray-950 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Ex: Honda Civic 2020"
         />
       </div>
@@ -311,7 +179,7 @@ const CustomerForm: React.FC<{
           type="text"
           value={currentOrder.carPlate}
           onChange={(e) => setCurrentOrder(prev => ({...prev, carPlate: e.target.value.toUpperCase()}))}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+          className="w-full px-4 py-3 border  text-gray-950 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
           placeholder="ABC1234"
           maxLength={7}
         />
@@ -321,7 +189,7 @@ const CustomerForm: React.FC<{
 };
 
 const OrderSummary: React.FC<{
-  currentOrder: Order;
+  currentOrder: CurrentOrder;
 }> = ({ currentOrder }) => {
   const selectedService = serviceTypes.find(s => s.id === currentOrder.serviceType);
   const selectedExtras = extraServices.filter(s => currentOrder.extraServices.includes(s.id));
@@ -343,13 +211,13 @@ const OrderSummary: React.FC<{
       
       <div className="space-y-3">
         <div className="flex justify-between">
-          <span className="text-gray-600">Cliente:</span>
-          <span className="font-medium">{currentOrder.customerName || '-'}</span>
+          <span className="text-gray-800">Cliente:</span>
+          <span className="font-medium  text-gray-700">{currentOrder.customerName || '-'}</span>
         </div>
         
         <div className="flex justify-between">
           <span className="text-gray-600">Veículo:</span>
-          <span className="font-medium">
+          <span className="font-medium  text-gray-700">
             {currentOrder.carModel || '-'} 
             {currentOrder.carPlate && ` (${currentOrder.carPlate})`}
           </span>
@@ -380,21 +248,11 @@ const OrderSummary: React.FC<{
   );
 };
 
-// Componente principal
-const CarWashCustomerApp: React.FC = () => {
-  const [currentOrder, setCurrentOrder] = useState<Order>({
-    customerName: '',
-    phone: '',
-    carModel: '',
-    carPlate: '',
-    serviceType: '',
-    extraServices: []
-  });
-
-  const [showModal, setShowModal] = useState(false);
-  const [orderCode, setOrderCode] = useState('');
-  const [currentView, setCurrentView] = useState<'form' | 'tracking'>('form');
-
+const CustomerView: React.FC<CustomerViewProps> = ({ 
+  currentOrder, 
+  setCurrentOrder, 
+  onSubmitOrder 
+}) => {
   const isFormValid = () => {
     return currentOrder.customerName.trim() !== '' &&
            currentOrder.phone.trim() !== '' &&
@@ -403,64 +261,10 @@ const CarWashCustomerApp: React.FC = () => {
            currentOrder.serviceType !== '';
   };
 
-  const handleSubmitOrder = () => {
-    if (!isFormValid()) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
-      return;
-    }
-
-    const newOrderCode = generateOrderCode();
-    setOrderCode(newOrderCode);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    // Resetar formulário
-    setCurrentOrder({
-      customerName: '',
-      phone: '',
-      carModel: '',
-      carPlate: '',
-      serviceType: '',
-      extraServices: []
-    });
-  };
-
-  const handleGoToTracking = () => {
-    setShowModal(false);
-    setCurrentView('tracking');
-  };
-
-  if (currentView === 'tracking') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-        <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            <Car className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Acompanhar Pedido
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Seu pedido <strong>{orderCode}</strong> está sendo processado.
-            </p>
-            <button
-              onClick={() => setCurrentView('form')}
-              className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Voltar ao Início
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
               <Car className="w-12 h-12 text-blue-600" />
@@ -472,7 +276,6 @@ const CarWashCustomerApp: React.FC = () => {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Formulário */}
             <div className="lg:col-span-2 space-y-8">
               <div className="bg-white rounded-2xl shadow-xl p-8">
                 <CustomerForm 
@@ -496,14 +299,13 @@ const CarWashCustomerApp: React.FC = () => {
               </div>
             </div>
 
-            {/* Resumo e Ações */}
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-xl p-6">
                 <OrderSummary currentOrder={currentOrder} />
               </div>
 
               <button
-                onClick={handleSubmitOrder}
+                onClick={onSubmitOrder}
                 disabled={!isFormValid()}
                 className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all ${
                   isFormValid()
@@ -516,25 +318,15 @@ const CarWashCustomerApp: React.FC = () => {
 
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                 <p className="text-sm text-blue-800">
-                  <strong>💡 Dica:</strong> Você receberá notificações no WhatsApp sobre o andamento do seu pedido.
+                  💡 Após criar o pedido, você receberá um código para acompanhar o status da lavagem.
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Modal de Pedido Criado */}
-      {showModal && (
-        <OrderCreatedModal
-          orderCode={orderCode}
-          customerName={currentOrder.customerName}
-          onClose={handleCloseModal}
-          onGoToTracking={handleGoToTracking}
-        />
-      )}
     </div>
   );
 };
 
-export default CarWashCustomerApp;
+export default CustomerView;

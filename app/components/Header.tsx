@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({
             <Car className="text-white text-lg" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">Lava-Jato Santa Mônica</h1>
+            <h1 className="text-xl font-bold text-gray-800">Lava-Jato</h1>
             <p className="text-sm text-gray-500">
               {userType === 'admin' ? 'Painel Administrativo' : 'Portal do Cliente'}
             </p>
