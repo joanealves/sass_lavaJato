@@ -78,7 +78,6 @@ const App: React.FC = () => {
       return;
     }
 
-    // Gerar código do pedido
     const generateOrderCode = (): string => {
       const now = new Date();
       const year = now.getFullYear();
@@ -91,7 +90,7 @@ const App: React.FC = () => {
     };
 
     const newOrder: Order = {
-      id: generateOrderCode(), // Usar código gerado em vez de contador
+      id: generateOrderCode(), 
       customerName: currentOrder.customerName.trim(),
       phone: currentOrder.phone.trim(),
       carModel: currentOrder.carModel.trim() || 'Não informado',
