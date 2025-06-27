@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Car, User, Phone, Copy, MessageCircle, Check } from 'lucide-react';
+import { Car, User, Phone, Check } from 'lucide-react';
 import { CurrentOrder, CustomerViewProps } from '../types/types';
 
 interface ServiceType {

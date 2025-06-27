@@ -17,7 +17,6 @@ const App: React.FC = () => {
   const [userType, setUserType] = useState<UserType>(null);
   const [currentView, setCurrentView] = useState<ViewType>('customer');
   const [orders, setOrders] = useState<Order[]>([]); 
-  const [orderCounter, setOrderCounter] = useState<number>(1);
 
   const [currentOrder, setCurrentOrder] = useState<CurrentOrder>({
     customerName: '',
@@ -103,7 +102,6 @@ const App: React.FC = () => {
     };
 
     setOrders(prevOrders => [...prevOrders, newOrder]);
-    setOrderCounter(prev => prev + 1);
 
     setCurrentOrder({
       customerName: '',
