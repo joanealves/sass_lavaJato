@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import { Eye, Clock, Car, CheckCircle, Search, MessageCircle, Copy, Phone, AlertCircle } from 'lucide-react';
-import { Order, OrderStatus, ServiceType, ExtraService, TrackingViewProps } from '../types/types';
+import { Order, OrderStatus, TrackingViewProps } from '../types/orders';
+
+interface ServiceType {
+  id: string;
+  name: string;
+  price: string;
+  duration: number;
+}
+
+interface ExtraService {
+  id: string;
+  name: string;
+  price: string;
+  needsApproval: boolean;
+}
 
 const serviceTypes: ServiceType[] = [
   { id: 'simples', name: 'Lavagem Simples', price: 'R$ 15,00', duration: 30 },
@@ -86,11 +100,11 @@ const OrderTrackingDetails: React.FC<{ order: Order }> = ({ order }) => {
     alert('Código do pedido copiado!');
   };
 
-  const generateStatusMessage = (status: OrderStatus): string => {
-    const selectedService = serviceTypes.find(s => s.id === order.serviceType);
+ const generateStatusMessage = (status: OrderStatus): string => {
+  const selectedService = serviceTypes.find(s => s.id === order.serviceType);
 
-    const statusMessages = {
-      [OrderStatus.WAITING]: `🕐 *Pedido em Fila - ${order.id}*
+ const statusMessages: Partial<Record<OrderStatus, string>> = {
+  [OrderStatus.WAITING]: `🕐 *Pedido em Fila - ${order.id}*
 
 Olá ${order.customerName}! Seu pedido está na fila de espera.
 
@@ -103,7 +117,7 @@ Você será notificado quando iniciarmos o serviço!
 🏪 *Lava-Jato*
 📞 (11) 99999-9999`,
 
-      [OrderStatus.IN_PROGRESS]: `🚗 *Serviço Iniciado - ${order.id}*
+  [OrderStatus.IN_PROGRESS]: `🚗 *Serviço Iniciado - ${order.id}*
 
 ${order.customerName}, começamos a lavagem do seu veículo!
 
@@ -116,7 +130,7 @@ Você será notificado quando estiver pronto!
 🏪 *Lava-Jato*
 📞 (11) 99999-9999`,
 
-      [OrderStatus.READY]: `✅ *Veículo Pronto - ${order.id}*
+  [OrderStatus.READY]: `✅ *Veículo Pronto - ${order.id}*
 
 🎉 ${order.customerName}, seu veículo está pronto para retirada!
 
@@ -130,7 +144,7 @@ Venha buscar quando puder! 🚗💨
 
 🏪 *Lava-Jato*`,
 
-      [OrderStatus.COMPLETED]: `🏁 *Serviço Finalizado - ${order.id}*
+  [OrderStatus.COMPLETED]: `🏁 *Serviço Finalizado - ${order.id}*
 
 Obrigado ${order.customerName}! 
 
@@ -143,10 +157,10 @@ Obrigado ${order.customerName}!
 
 🏪 *Lava-Jato*
 📞 (11) 99999-9999`
-    };
+};
 
-    return statusMessages[status];
-  };
+  return statusMessages[status] || `Status: ${getStatusText(status)}`;
+};
 
   const sendStatusNotification = () => {
     const message = generateStatusMessage(order.status);
@@ -257,6 +271,16 @@ const OrderTimeline: React.FC<{ order: Order }> = ({ order }) => {
     }
     
     return 'Data inválida';
+  };
+
+  const getStatusText = (status: OrderStatus): string => { 
+    switch (status) {
+      case OrderStatus.WAITING: return 'Aguardando';
+      case OrderStatus.IN_PROGRESS: return 'Em Andamento';
+      case OrderStatus.READY: return 'Pronto';
+      case OrderStatus.COMPLETED: return 'Finalizado';
+      default: return status;
+    }
   };
 
   return (

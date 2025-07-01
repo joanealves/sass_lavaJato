@@ -1,23 +1,36 @@
 import React from 'react';
-
 export enum OrderStatus {
+  PENDING = 'PENDING',
   WAITING = 'WAITING',
-  IN_PROGRESS = 'IN_PROGRESS', 
+  IN_PROGRESS = 'IN_PROGRESS',
+  PROCESSING = 'PROCESSING',
   READY = 'READY',
-  COMPLETED = 'COMPLETED'
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
+
+export enum ServiceType {
+  SIMPLE = 'SIMPLE',
+  COMPLETE = 'COMPLETE',
+  PREMIUM = 'PREMIUM',
+  DETAILED = 'DETAILED'
 }
 
 export interface Order {
   id: string;
   customerName: string;
+  customerEmail: string;
   phone: string;
-  serviceType: string;
   carModel: string;
   carPlate: string;
+  serviceType: ServiceType | string; 
   extraServices: string[];
   status: OrderStatus;
+  totalPrice: number;
   createdAt: Date;
+  updatedAt?: Date;
   readyAt?: Date | null;
+  completedAt?: Date;
 }
 
 export interface CurrentOrder {
@@ -25,11 +38,11 @@ export interface CurrentOrder {
   phone: string;
   carModel: string;
   carPlate: string;
-  serviceType: string;
+  serviceType: ServiceType | string; 
   extraServices: string[];
 }
 
-export interface ServiceType {
+export interface ServiceTypeInterface {
   id: string;
   name: string;
   price: string;
@@ -43,43 +56,32 @@ export interface ExtraService {
   needsApproval: boolean;
 }
 
-export type UserType = 'user' | 'admin' | null;
-export type ViewType = 'customer' | 'admin' | 'dashboard' | 'tracking';
-
-export interface TrackingViewProps {
-  orders: Order[]; 
-}
-
-export interface AdminViewProps {
-  orders: Order[];
-  onUpdateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
-  onDeleteOrder: (orderId: string) => void;
-}
-
-export interface CustomerViewProps {
-  currentOrder: CurrentOrder;
-  setCurrentOrder: React.Dispatch<React.SetStateAction<CurrentOrder>>;
-  onSubmitOrder: () => void;
-}
-
-export interface DashboardViewProps {
-  orders: Order[];
-}
-
-export interface HeaderProps {
-  userType: UserType;
-  currentView: ViewType;
-  onViewChange: (view: ViewType) => void;
-  onLogout: () => void;
-}
-
-export interface LoginViewProps {
-  onLogin: (type: UserType) => void;
-}
-
 export interface Service {
   id: string;
   name: string;
   price: string;
 }
 
+export interface TrackingViewProps {
+  orders: Order[];
+}
+
+export interface AdminViewProps {
+  orders: Order[];
+  onUpdateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
+  onDeleteOrder: (orderId: string) => void;
+  onSendWhatsApp?: (orderId: string) => void;
+  isClientView?: boolean; 
+}
+
+export interface CustomerViewProps {
+  currentOrder: CurrentOrder;
+  setCurrentOrder: React.Dispatch<React.SetStateAction<CurrentOrder>>;
+  onAddOrder: (order: Order) => void;
+  onSubmitOrder?: () => void;
+}
+
+export interface DashboardViewProps {
+  orders: Order[];
+  userRole?: string;
+}
