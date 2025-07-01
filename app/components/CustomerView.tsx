@@ -1,6 +1,6 @@
 import { Car, User, Phone, Check } from 'lucide-react';
 import React from 'react';
-import { Order, OrderStatus, ExtraService, CurrentOrder, ServiceType } from '../types/orders'; 
+import { ExtraService, CurrentOrder, ServiceType } from '../types/orders'; 
 interface CustomerViewProps {
   currentOrder: CurrentOrder;
   setCurrentOrder: React.Dispatch<React.SetStateAction<CurrentOrder>>;

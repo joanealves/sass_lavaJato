@@ -25,7 +25,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useNavigationGuard } from './hooks/useNavigationGuard';
 
 const AppContent: React.FC = () => {
-  const { user, isLoading, login, logout, register } = useAuth();
+  const { user, isLoading, login, logout } = useAuth(); 
   const { getDefaultRoute, canNavigateTo, getNavigationItems } = useNavigationGuard(user?.role);
 
   const [currentView, setCurrentView] = useState<AllRoutes>('home');
@@ -191,10 +191,6 @@ const AppContent: React.FC = () => {
     );
   }
 
-  if (currentView === 'login' || currentView === 'register') {
-    return <LoginView onLogin={login} onRegister={register} />;
-  }
-
   const renderCurrentView = () => {
     if (!canNavigateTo(currentView)) {
       return <AccessDeniedView />;
@@ -203,6 +199,9 @@ const AppContent: React.FC = () => {
     switch (currentView) {
       case 'home':
         return <HomeView onViewChange={handleViewChange} />;
+
+      case 'login':
+        return <LoginView onLogin={login} />;
 
       case 'customer':
         return (

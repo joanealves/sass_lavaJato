@@ -17,7 +17,6 @@ const NAVIGATION_ITEMS: NavigationItem[] = [
   { path: 'tracking', title: 'Rastrear Pedido', section: 'main', isPublic: true },
   { path: 'scheduling', title: 'Agendamento', section: 'main', isPublic: true },
   { path: 'login', title: 'Login', section: 'main', isPublic: true },
-  { path: 'register', title: 'Cadastro', section: 'main', isPublic: true },
 
   { 
     path: 'employee-dashboard', 
@@ -125,7 +124,7 @@ export const useNavigationGuard = (userRole: UserRole = UserRole.PUBLIC) => {
     return (): NavigationItem[] => {
       return NAVIGATION_ITEMS.filter(item => {
         if (item.isPublic) {
-          if (userRole !== UserRole.PUBLIC && (item.path === 'login' || item.path === 'register')) {
+          if (userRole !== UserRole.PUBLIC && item.path === 'login') {
             return false;
           }
           return true;

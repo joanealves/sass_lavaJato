@@ -54,12 +54,10 @@ const plans: Plan[] = [
     features: [
       'Controle de pedidos básico',
       'Acompanhamento de status',
-      'Notificações por WhatsApp',
       'Dashboard simples',
-      'Suporte por email'
     ],
     limits: {
-      orders: '100 pedidos/mês',
+      orders: '50 pedidos/mês',
       users: '1 usuário',
       storage: '1GB de armazenamento'
     }
@@ -81,12 +79,10 @@ const plans: Plan[] = [
       'WhatsApp automático',
       'Controle de funcionários',
       'Relatórios em PDF',
-      'Backup automático',
-      'App mobile'
     ],
     limits: {
-      orders: '500 pedidos/mês',
-      users: '5 usuários',
+      orders: '150 pedidos/mês',
+      users: '2 usuários',
       storage: '10GB de armazenamento'
     }
   },

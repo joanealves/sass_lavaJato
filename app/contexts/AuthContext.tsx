@@ -23,12 +23,13 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-const DEMO_USERS: User[] = [
+const DEMO_USERS: (User & { senha: string })[] = [
   {
     id: '2',
     name: 'Maria Funcionária',
     email: 'funcionario@lava-jato.com',
     phone: '11987654322',
+    senha: 'senha123',
     role: UserRole.EMPLOYEE,
     permissions: DEFAULT_ROLE_PERMISSIONS[UserRole.EMPLOYEE],
     createdAt: new Date()
@@ -38,6 +39,7 @@ const DEMO_USERS: User[] = [
     name: 'Carlos Admin',
     email: 'admin@lava-jato.com',
     phone: '11987654323',
+    senha: 'admin123',
     role: UserRole.ADMIN,
     permissions: DEFAULT_ROLE_PERMISSIONS[UserRole.ADMIN],
     createdAt: new Date()
@@ -56,11 +58,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const foundUser = DEMO_USERS.find(u => 
         u.email === credentials.email && 
-        (credentials.password === '123456' || credentials.password === 'password')
+        u.senha === credentials.password
       );
 
       if (foundUser) {
-        setUser(foundUser);
+        const { senha, ...userWithoutPassword } = foundUser;
+        setUser(userWithoutPassword);
         return true;
       }
       
@@ -84,18 +87,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return false; 
       }
 
-      const newUser: User = {
+      const newUser: User & { senha: string } = {
         id: Date.now().toString(),
         name: data.name,
         email: data.email,
         phone: data.phone,
+        senha: data.password,
         role: UserRole.EMPLOYEE, 
         permissions: DEFAULT_ROLE_PERMISSIONS[UserRole.EMPLOYEE],
         createdAt: new Date()
       };
 
       DEMO_USERS.push(newUser);
-      setUser(newUser);
+      const { senha, ...userWithoutPassword } = newUser;
+      setUser(userWithoutPassword);
       return true;
     } catch (error) {
       console.error('Erro no registro:', error);

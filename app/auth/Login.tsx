@@ -1,59 +1,31 @@
 import React, { useState } from 'react';
-import { Car, LogIn, UserPlus } from 'lucide-react';
-import { LoginCredentials, RegisterData } from '../types/auth';
+import { Car, LogIn } from 'lucide-react';
+import { LoginCredentials } from '../types/auth';
 
 interface LoginViewProps {
   onLogin: (credentials: LoginCredentials) => Promise<boolean>;
-  onRegister: (userData: RegisterData) => Promise<boolean>;
 }
 
-const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegister }): React.ReactElement => {
-  const [isRegisterMode, setIsRegisterMode] = useState<boolean>(false);
+const LoginView: React.FC<LoginViewProps> = ({ onLogin }): React.ReactElement => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleAuth = async (): Promise<void> => {
+  const handleLogin = async (): Promise<void> => {
     setError(null);
+
+    if (!email || !password) {
+      setError('Por favor, preencha o email e a senha.');
+      return;
+    }
+
     setIsLoading(true);
 
-    let success = false;
+    const success = await onLogin({ email, password });
 
-    if (isRegisterMode) {
-      if (!name || !email || !password || !confirmPassword || !phone) {
-        setError('Por favor, preencha todos os campos para registro.');
-        setIsLoading(false);
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        setError('As senhas não coincidem.');
-        setIsLoading(false);
-        return;
-      }
-
-      success = await onRegister({ name, email, password, confirmPassword, phone });
-
-      if (!success) {
-        setError('Falha no registro. O email pode já estar em uso ou dados inválidos.');
-      }
-
-    } else {
-      if (!email || !password) {
-        setError('Por favor, preencha o email e a senha.');
-        setIsLoading(false);
-        return;
-      }
-
-      success = await onLogin({ email, password });
-
-      if (!success) {
-        setError('Email ou senha incorretos.');
-      }
+    if (!success) {
+      setError('Email ou senha incorretos.');
     }
 
     setIsLoading(false);
@@ -61,7 +33,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegister }): React.Rea
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
-      handleAuth();
+      handleLogin();
     }
   };
 
@@ -76,7 +48,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegister }): React.Rea
             Bem-vindo ao Lava-Jato!
           </h1>
           <p className="text-gray-500 text-lg">
-            {isRegisterMode ? 'Crie sua conta para começar' : 'Faça login na sua conta'}
+            Faça login para acessar o sistema
           </p>
         </div>
 
@@ -87,21 +59,6 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegister }): React.Rea
         )}
 
         <div className="space-y-5">
-          {isRegisterMode && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nome Completo
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder="Seu nome..."
-              />
-            </div>
-          )}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Email
@@ -112,6 +69,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegister }): React.Rea
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 text-gray-900 focus:ring-indigo-500 focus:border-transparent"
               placeholder="seu.email@exemplo.com"
+              onKeyPress={handleKeyPress}
             />
           </div>
 
@@ -129,38 +87,8 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegister }): React.Rea
             />
           </div>
 
-          {isRegisterMode && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirmar Senha
-                </label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Telefone
-                </label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="(XX) XXXXX-XXXX"
-                />
-              </div>
-            </>
-          )}
-
           <button
-            onClick={handleAuth}
+            onClick={handleLogin}
             disabled={isLoading}
             className={`w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-indigo-700 hover:to-blue-700 transition-all shadow-lg ${
               isLoading ? 'opacity-70 cursor-not-allowed' : ''
@@ -168,11 +96,6 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegister }): React.Rea
           >
             {isLoading ? (
               'Carregando...'
-            ) : isRegisterMode ? (
-              <>
-                <UserPlus className="inline w-5 h-5 mr-2" />
-                Registrar
-              </>
             ) : (
               <>
                 <LogIn className="inline w-5 h-5 mr-2" />
@@ -182,23 +105,18 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegister }): React.Rea
           </button>
         </div>
 
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>
-            {isRegisterMode ? 'Já tem uma conta?' : 'Não tem uma conta?'}
-            <button
-              onClick={() => setIsRegisterMode(prev => !prev)}
-              className="text-indigo-600 hover:text-indigo-800 font-medium ml-1 focus:outline-none"
-            >
-              {isRegisterMode ? 'Faça Login' : 'Registre-se'}
-            </button>
-          </p>
-
-          <div className="bg-gray-50 rounded-lg p-4 mt-4">
-            <strong>Plano Freemium</strong>
-            <div className="text-xs mt-1">
-              • Até 50 pedidos por mês
-              <br />• Acompanhamento de pedidos em tempo real
-              <br />• Agendamento simplificado
+        <div className="mt-8 text-center">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="text-sm text-gray-600 mb-2">
+              <strong>Contas de Teste:</strong>
+            </div>
+            <div className="text-xs text-gray-500 space-y-1">
+              <div>
+                <strong>Funcionário:</strong> funcionario@lava-jato.com | senha123
+              </div>
+              <div>
+                <strong>Administrador:</strong> admin@lava-jato.com | admin123
+              </div>
             </div>
           </div>
         </div>
