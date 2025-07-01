@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 
 import LoginView from './auth/Login';
-import CustumerView from './components/CustumerView'; 
+import CustumerView from './components/CustomerView'; 
 import AdminView from './components/AdminView';
 import DashboardView from './components/DashboardView';
 import TrackingView from './components/TrackingView';
