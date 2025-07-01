@@ -8,17 +8,18 @@ interface CustomerViewProps {
 }
 
 const serviceTypes = [
-  { id: ServiceType.SIMPLE, name: 'Lavagem Simples', price: 'R$ 15,00', duration: '30 min' },
-  { id: ServiceType.COMPLETE, name: 'Lavagem Completa', price: 'R$ 25,00', duration: '45 min' },
-  { id: ServiceType.DETAILED, name: 'Lavagem Detalhada', price: 'R$ 40,00', duration: '60 min' },
+  { id: ServiceType.SIMPLE, name: 'Lavagem Simples', price: 'R$ 20,00', duration: '30 min' },
+  { id: ServiceType.COMPLETE, name: 'Lavagem Completa', price: 'R$ 45,00', duration: '45 min' },
+  { id: ServiceType.DETAILED, name: 'Lavagem Detalhada', price: 'R$ 55,00', duration: '60 min' },
   { id: ServiceType.PREMIUM, name: 'Lavagem Premium', price: 'R$ 60,00', duration: '90 min' }
+  
 ];
 
 const extraServices: ExtraService[] = [
-  { id: 'motor', name: 'Lavagem do Motor', price: 'R$ 20,00', needsApproval: true },
+  { id: 'motor', name: 'Lavagem do Motor', price: 'R$ 50,00', needsApproval: true },
   { id: 'cera', name: 'Enceramento', price: 'R$ 15,00', needsApproval: false },
-  { id: 'aspiracao', name: 'Aspiração Detalhada', price: 'R$ 10,00', needsApproval: false },
-  { id: 'pneus', name: 'Pretinho nos Pneus', price: 'R$ 8,00', needsApproval: false }
+  { id: 'aspiracao', name: 'Aspiração Detalhada', price: 'R$ 30,00', needsApproval: false },
+  { id: 'pneus', name: 'Pretinho nos Pneus', price: 'R$ 10,00', needsApproval: false }
 ];
 
 const CustomerView: React.FC<CustomerViewProps> = ({ currentOrder, setCurrentOrder, onSubmit }) => {

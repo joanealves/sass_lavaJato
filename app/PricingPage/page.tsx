@@ -1,3 +1,5 @@
+
+'use client';
 import React, { useState } from 'react';
 import { 
   Check, 
@@ -140,12 +142,6 @@ const detailedFeatures: PlanFeature[] = [
     enterprise: true
   },
   {
-    name: 'App Mobile',
-    basic: false,
-    professional: true,
-    enterprise: true
-  },
-  {
     name: 'Sistema de Pagamentos',
     basic: false,
     professional: false,
@@ -176,12 +172,6 @@ const detailedFeatures: PlanFeature[] = [
     enterprise: true
   },
   {
-    name: 'Backup Automático',
-    basic: false,
-    professional: true,
-    enterprise: true
-  },
-  {
     name: 'Suporte',
     basic: 'Email',
     professional: 'Chat + Email',
@@ -198,11 +188,12 @@ const PricingPlans: React.FC = () => {
     return isAnnual ? price * 10 : price; 
   };
 
-  const handleSelectPlan = (planId: string) => {
-    setSelectedPlan(planId);
-    
-    alert(`Plano ${plans.find(p => p.id === planId)?.name} selecionado!`);
-  };
+  const redirectToWhatsApp = (plan: Plan) => {
+  const message = `Olá! Tenho interesse no plano *${plan.name}* (${plan.period}) no valor de R$ ${plan.price.toFixed(2).replace('.', ',')}.\n\nPor favor, me envie mais informações.`;
+  const url = `https://wa.me/5531985201743?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
@@ -213,12 +204,14 @@ const PricingPlans: React.FC = () => {
             <div className="inline-flex items-center gap-2 bg-blue-500/10 backdrop-blur-sm border border-blue-500/20 rounded-full px-4 py-2 mb-6">
               <Zap className="w-4 h-4 text-yellow-400" />
               <span className="text-sm text-blue-200 font-medium">🔥 Promoção de Lançamento - 40% OFF</span>
-            </div>
             
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+              
+
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
               Escolha o Plano
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> Ideal</span>
-            </h1>
+            </h2>
             
             <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
               Transforme seu lava-jato com nossa plataforma completa. Gerencie pedidos, clientes e pagamentos em um só lugar.
@@ -288,15 +281,16 @@ const PricingPlans: React.FC = () => {
                     </div>
 
                     <button
-                      onClick={() => handleSelectPlan(plan.id)}
+                      onClick={() => redirectToWhatsApp(plan)}
                       className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all mb-8 ${
                         plan.popular
                           ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:from-emerald-600 hover:to-green-700 shadow-lg shadow-emerald-500/25'
                           : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20'
                       }`}
                     >
-                      {selectedPlan === plan.id ? 'Selecionado!' : 'Começar Agora'}
+                      Falar no WhatsApp
                     </button>
+
 
                     <div className="space-y-3 mb-6">
                       <div className="flex items-center justify-between text-sm">
@@ -427,11 +421,12 @@ const PricingPlans: React.FC = () => {
                 Junte-se a centenas de lava-jatos que já aumentaram sua produtividade em até 300%
               </p>
               <button
-                onClick={() => handleSelectPlan('professional')}
+                onClick={() => redirectToWhatsApp(plans.find(p => p.id === 'professional')!)}
                 className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-emerald-600 hover:to-green-700 transition-all shadow-lg shadow-emerald-500/25"
               >
-                Começar Teste Grátis de 14 dias
+                Começar Teste Grátis de 07 dias
               </button>
+
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
+'use client';
 import React, { useState } from 'react';
 import { Car, LogIn } from 'lucide-react';
+import Link from 'next/link'; 
 import { LoginCredentials } from '../types/auth';
 
 interface LoginViewProps {
@@ -106,19 +108,25 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }): React.ReactElement =>
         </div>
 
         <div className="mt-8 text-center">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600 mb-2">
-              <strong>Contas de Teste:</strong>
-            </div>
-            <div className="text-xs text-gray-500 space-y-1">
-              <div>
-                <strong>Funcionário:</strong> funcionario@lava-jato.com | senha123
-              </div>
-              <div>
-                <strong>Administrador:</strong> admin@lava-jato.com | admin123
-              </div>
+          <div className="bg-gray-50 rounded-lg p-4 mt-4 text-gray-600">
+            <strong>Plano Freemium</strong>
+            <div className="text-xs mt-1 text-gray-500">
+              • Até 50 pedidos por mês
+              <br />• Acompanhamento de pedidos em tempo real
+              <br />• Agendamento simplificado
             </div>
           </div>
+
+          <p className="mt-4 text-sm text-gray-600">
+            Experimente grátis por 7 dias todos os recursos premium!
+          </p>
+
+          <Link
+            href="/PricingPage"
+            className="mt-2 inline-block text-indigo-600 hover:underline text-sm font-medium"
+          >
+            Ver todos os planos e fazer upgrade →
+          </Link>
         </div>
       </div>
     </div>
