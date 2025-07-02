@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Clock, Car, CheckCircle, Phone, Trash2, MessageCircle } from 'lucide-react';
+import { User, Clock, Car, CheckCircle, Phone, Trash2, MessageCircle, ChevronDown } from 'lucide-react';
 import {  OrderStatus, AdminViewProps } from '../types/orders';
 
 const AdminView: React.FC<AdminViewProps> = ({ 
@@ -9,6 +9,7 @@ const AdminView: React.FC<AdminViewProps> = ({
   onSendWhatsApp 
 }) => {
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | 'all'>('all');
+  const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
 
   const filteredOrders = selectedStatus === 'all' 
     ? orders 
@@ -55,27 +56,42 @@ const AdminView: React.FC<AdminViewProps> = ({
     }
   };
 
-  const getNextStatus = (currentStatus: OrderStatus): OrderStatus | null => {
+  const getAvailableStatuses = (currentStatus: OrderStatus): OrderStatus[] => {
     switch (currentStatus) {
       case OrderStatus.PENDING:
-        return OrderStatus.WAITING;
+        return [OrderStatus.WAITING, OrderStatus.CANCELLED];
       case OrderStatus.WAITING:
-        return OrderStatus.IN_PROGRESS;
+        return [OrderStatus.IN_PROGRESS, OrderStatus.PROCESSING, OrderStatus.CANCELLED];
       case OrderStatus.IN_PROGRESS:
+        return [OrderStatus.PROCESSING, OrderStatus.READY, OrderStatus.CANCELLED];
       case OrderStatus.PROCESSING:
-        return OrderStatus.READY;
+        return [OrderStatus.READY, OrderStatus.IN_PROGRESS, OrderStatus.CANCELLED];
       case OrderStatus.READY:
-        return OrderStatus.COMPLETED;
+        return [OrderStatus.COMPLETED, OrderStatus.IN_PROGRESS];
+      case OrderStatus.COMPLETED:
+        return []; 
+      case OrderStatus.CANCELLED:
+        return [OrderStatus.PENDING]; 
       default:
-        return null;
+        return [];
     }
   };
 
-  const handleStatusUpdate = (orderId: string, currentStatus: OrderStatus) => {
-    const nextStatus = getNextStatus(currentStatus);
-    if (nextStatus) {
-      onUpdateOrderStatus(orderId, nextStatus);
+  const toggleDropdown = (orderId: string) => {
+    const newOpenDropdowns = new Set(openDropdowns);
+    if (newOpenDropdowns.has(orderId)) {
+      newOpenDropdowns.delete(orderId);
+    } else {
+      newOpenDropdowns.add(orderId);
     }
+    setOpenDropdowns(newOpenDropdowns);
+  };
+
+  const handleStatusChange = (orderId: string, newStatus: OrderStatus) => {
+    onUpdateOrderStatus(orderId, newStatus);
+    const newOpenDropdowns = new Set(openDropdowns);
+    newOpenDropdowns.delete(orderId);
+    setOpenDropdowns(newOpenDropdowns);
   };
 
   const handleSendWhatsApp = (orderId: string) => {
@@ -156,15 +172,38 @@ const AdminView: React.FC<AdminViewProps> = ({
                       </p>
                     </div>
                     
-                    
-                    {getNextStatus(order.status) && (
-                      <button
-                        onClick={() => handleStatusUpdate(order.id, order.status)}
-                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        title={`Avançar para: ${getStatusText(getNextStatus(order.status)!)}`}
-                      >
-                        <CheckCircle className="h-4 w-4" />
-                      </button>
+                    {getAvailableStatuses(order.status).length > 0 && (
+                      <div className="relative">
+                        <button
+                          onClick={() => toggleDropdown(order.id)}
+                          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          title="Alterar Status"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          <ChevronDown className="h-3 w-3" />
+                        </button>
+                        
+                        {openDropdowns.has(order.id) && (
+                          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                            <div className="py-1">
+                              <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide border-b border-gray-100">
+                                Alterar para:
+                              </div>
+                              {getAvailableStatuses(order.status).map((status) => (
+                                <button
+                                  key={status}
+                                  onClick={() => handleStatusChange(order.id, status)}
+                                  className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                >
+                                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mr-2 ${getStatusColor(status)}`}>
+                                    {getStatusText(status)}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     )}
                     
                     <button
@@ -194,10 +233,16 @@ const AdminView: React.FC<AdminViewProps> = ({
                 </div>
               </li>
             ))
-
           )}
         </ul>
       </div>
+
+      {openDropdowns.size > 0 && (
+        <div 
+          className="fixed inset-0 z-0" 
+          onClick={() => setOpenDropdowns(new Set())}
+        />
+      )}
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         <div className="bg-white overflow-hidden shadow rounded-lg">
@@ -274,4 +319,4 @@ const AdminView: React.FC<AdminViewProps> = ({
   );
 };
 
-export default AdminView; 
+export default AdminView;

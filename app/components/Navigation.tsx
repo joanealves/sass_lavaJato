@@ -1,4 +1,3 @@
-
 'use client'
 import React, { useState } from 'react';
 import {
@@ -65,9 +64,21 @@ const Navigation: React.FC<NavigationProps> = ({
     return iconMap[path] || Home;
   };
 
-  const filteredNavigationItems = navigationItems.filter(
-    item => !['register', 'login'].includes(item.path)
-  );
+  // Filtrar itens de navegação: remover login, register e scheduling (agendamento) para usuários logados
+  const filteredNavigationItems = navigationItems.filter(item => {
+    // Sempre remover login e register da navegação principal
+    if (['register', 'login'].includes(item.path)) {
+      return false;
+    }
+    
+    // Se o usuário está logado, remover também o "scheduling" (agendamento público)
+    // pois já têm acesso aos seus respectivos schedulings (employee-scheduling, admin-scheduling)
+    if (userRole !== UserRole.PUBLIC && item.path === 'scheduling') {
+      return false;
+    }
+    
+    return true;
+  });
 
   const groupedItems = filteredNavigationItems.reduce((acc, item) => {
     const section = item.section || 'main';
