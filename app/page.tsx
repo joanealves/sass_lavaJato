@@ -23,6 +23,7 @@ import { ScheduledOrder } from './types/scheduling';
 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useNavigationGuard } from './hooks/useNavigationGuard';
+import Footer from './components/Footer';
 
 const AppContent: React.FC = () => {
   const { user, isLoading, login, logout } = useAuth(); 
@@ -280,23 +281,26 @@ const AppContent: React.FC = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Navigation
-        currentView={currentView}
-        onViewChange={handleViewChange}
-        userRole={user?.role || UserRole.PUBLIC}
-        onLogout={logout}
-        navigationItems={getNavigationItems()}
-      />
+ return (
+  <div className="min-h-screen bg-gray-50 flex flex-col">
+    <Navigation
+      currentView={currentView}
+      onViewChange={handleViewChange}
+      userRole={user?.role || UserRole.PUBLIC}
+      onLogout={logout}
+      navigationItems={getNavigationItems()}
+    />
 
-      <main className="flex-grow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          {renderCurrentView()}
-        </div>
-      </main>
-    </div>
-  );
+    <main className="flex-grow">
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        {renderCurrentView()}
+      </div>
+    </main>
+    <Footer />
+    
+  </div>
+);
+
 };
 
 const HomeView: React.FC<{ onViewChange: (view: AllRoutes) => void }> = ({ onViewChange }) => (
@@ -413,8 +417,13 @@ const FinancialView: React.FC<{ orders: Order[] }> = ({ orders }) => (
         </div>
       </div>
     </div>
+    
   </div>
+
+  
 );
+
+
 
 const AccessDeniedView: React.FC = () => (
   <div className="text-center py-12">

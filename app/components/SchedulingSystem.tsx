@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Calendar, User} from 'lucide-react';
 import { ScheduledOrder, SchedulingSystemProps } from '../types/scheduling'; 
 import { ServiceType } from '../types/orders';
+
 const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder, isClientView = false }) => {
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');

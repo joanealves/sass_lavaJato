@@ -1,5 +1,5 @@
 import { Car, User, Phone, Check, Copy, Download, CheckCircle, X } from 'lucide-react';
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 interface ExtraService {
   id: string;
@@ -17,6 +17,12 @@ interface CurrentOrder {
   extraServices: string[];
   orderCode?: string;
   createdAt?: Date;
+}
+
+interface CustomerViewProps {
+  currentOrder: CurrentOrder;
+  setCurrentOrder: Dispatch<SetStateAction<CurrentOrder>>;
+  onSubmit: (currentOrderData: CurrentOrder) => void;
 }
 
 enum ServiceType {
@@ -227,16 +233,8 @@ ${selectedExtras.map(extra => `• ${extra.name} - ${extra.price}`).join('\n')}`
   );
 };
 
-const CustomerView = () => {
-  const [currentOrder, setCurrentOrder] = React.useState<CurrentOrder>({
-    customerName: '',
-    phone: '',
-    carModel: '',
-    carPlate: '',
-    serviceType: ServiceType.SIMPLE,
-    extraServices: []
-  });
-  
+// Componente principal com as props corretas
+const CustomerView: React.FC<CustomerViewProps> = ({ currentOrder, setCurrentOrder, onSubmit }) => {
   const [showConfirmation, setShowConfirmation] = React.useState(false);
   const [confirmedOrder, setConfirmedOrder] = React.useState<CurrentOrder | null>(null);
 
@@ -292,12 +290,16 @@ const CustomerView = () => {
       };
       setConfirmedOrder(orderWithCode);
       setShowConfirmation(true);
+      
+      // Chama a função onSubmit passada como prop
+      onSubmit(orderWithCode);
     }
   };
 
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);
     setConfirmedOrder(null);
+    // Reset do formulário usando setCurrentOrder
     setCurrentOrder({
       customerName: '',
       phone: '',
@@ -501,6 +503,7 @@ const CustomerView = () => {
         />
       )}
     </>
+
   );
 };
 
