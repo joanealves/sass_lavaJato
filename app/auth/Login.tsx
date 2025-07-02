@@ -107,27 +107,28 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }): React.ReactElement =>
           </button>
         </div>
 
-        <div className="mt-8 text-center">
-          <div className="bg-gray-50 rounded-lg p-4 mt-4 text-gray-600">
-            <strong>Plano Freemium</strong>
-            <div className="text-xs mt-1 text-gray-500">
-              • Até 50 pedidos por mês
-              <br />• Acompanhamento de pedidos em tempo real
-              <br />• Agendamento simplificado
+        <div className="mt-12 text-center">
+          <div className="bg-gray-50 rounded-lg p-4 text-gray-700 shadow-sm max-w-md mx-auto">
+            <strong className="text-base font-semibold text-gray-800">Plano Freemium</strong>
+            <div className="text-xs mt-1 text-gray-500 leading-relaxed">
+              • Até 50 pedidos por mês<br />
+              • Acompanhamento de pedidos em tempo real<br />
+              • Agendamento simplificado
             </div>
           </div>
 
-          <p className="mt-4 text-sm text-gray-600">
-            Experimente grátis por 7 dias todos os recursos premium!
-          </p>
+          <div className="mt-6 bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 px-4 py-3 rounded-xl inline-block border border-blue-100 text-sm text-blue-800 font-medium shadow-sm max-w-md mx-auto">
+            🎁 Experimente grátis por <span className="font-bold text-blue-900">7 dias</span> todos os recursos premium!
+          </div>
 
           <Link
             href="/PricingPage"
-            className="mt-2 inline-block text-indigo-600 hover:underline text-sm font-medium"
+            className="mt-4 inline-block text-indigo-600 hover:text-indigo-700 hover:underline text-sm font-medium"
           >
             Ver todos os planos e fazer upgrade →
           </Link>
         </div>
+
       </div>
     </div>
   );
