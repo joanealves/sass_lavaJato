@@ -259,12 +259,10 @@ const CustomerView = () => {
     const numbers = '0123456789';
     let code = '';
     
-    // 3 letras
     for (let i = 0; i < 3; i++) {
       code += letters.charAt(Math.floor(Math.random() * letters.length));
     }
     
-    // 4 números
     for (let i = 0; i < 4; i++) {
       code += numbers.charAt(Math.floor(Math.random() * numbers.length));
     }
@@ -300,7 +298,6 @@ const CustomerView = () => {
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);
     setConfirmedOrder(null);
-    // Reset form
     setCurrentOrder({
       customerName: '',
       phone: '',

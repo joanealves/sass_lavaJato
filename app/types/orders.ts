@@ -1,4 +1,5 @@
 import React from 'react';
+
 export enum OrderStatus {
   PENDING = 'PENDING',
   WAITING = 'WAITING',
@@ -77,8 +78,7 @@ export interface AdminViewProps {
 export interface CustomerViewProps {
   currentOrder: CurrentOrder;
   setCurrentOrder: React.Dispatch<React.SetStateAction<CurrentOrder>>;
-  onAddOrder: (order: Order) => void;
-  onSubmitOrder?: () => void;
+  onSubmit: (orderData: CurrentOrder) => void;
 }
 
 export interface DashboardViewProps {
