@@ -428,7 +428,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ orders }) => {
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Rastreamento de Pedidos</h1>
+        <h1 className="text-3xl font-bold text-indigo-600 mb-2">Rastreamento de Pedidos</h1>
         <p className="text-gray-600">Acompanhe o status dos serviços em tempo real</p>
       </div>
 

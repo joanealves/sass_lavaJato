@@ -47,7 +47,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLogin }): React.ReactElement =>
             <Car className="text-white text-3xl" />
           </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Bem-vindo ao Lava-Jato!
+            Bem-vindo ao CarFlow!
           </h1>
           <p className="text-gray-500 text-lg">
             Faça login para acessar o sistema

@@ -302,7 +302,7 @@ const AppContent: React.FC = () => {
 const HomeView: React.FC<{ onViewChange: (view: AllRoutes) => void }> = ({ onViewChange }) => (
   <div className="space-y-8">
     <div className="text-center">
-      <h1 className="text-4xl font-bold text-gray-900 mb-4">Bem-vindo ao Lava-Jato</h1>
+      <h1 className="text-4xl font-bold text-indigo-600 mb-4">Bem-vindo ao Lava-Jato X</h1>
       <p className="text-xl text-gray-600 mb-8">Serviços de qualidade para seu veículo</p>
     </div>
 
@@ -311,7 +311,7 @@ const HomeView: React.FC<{ onViewChange: (view: AllRoutes) => void }> = ({ onVie
         className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer transition-shadow"
         onClick={() => onViewChange('customer')}
       >
-        <h3 className="text-xl font-semibold mb-3 text-gray-700">Fazer Pedido</h3>
+        <h3 className="text-xl font-semibold mb-3 text-indigo-600">Fazer Pedido</h3>
         <p className="text-gray-600">Solicite nossos serviços de lavagem</p>
       </div>
 
@@ -319,7 +319,7 @@ const HomeView: React.FC<{ onViewChange: (view: AllRoutes) => void }> = ({ onVie
         className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer transition-shadow"
         onClick={() => onViewChange('tracking')}
       >
-        <h3 className="text-xl font-semibold mb-3 text-gray-700">Rastrear Pedido</h3>
+        <h3 className="text-xl font-semibold mb-3 text-indigo-600">Rastrear Pedido</h3>
         <p className="text-gray-600">Acompanhe o status do seu pedido</p>
       </div>
 
@@ -327,7 +327,7 @@ const HomeView: React.FC<{ onViewChange: (view: AllRoutes) => void }> = ({ onVie
         className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer transition-shadow"
         onClick={() => onViewChange('scheduling')}
       >
-        <h3 className="text-xl font-semibold mb-3 text-gray-700 ">Agendamento</h3>
+        <h3 className="text-xl font-semibold mb-3 text-indigo-600 ">Agendamento</h3>
         <p className="text-gray-600">Agende um horário conveniente</p>
       </div>
     </div>
@@ -336,7 +336,7 @@ const HomeView: React.FC<{ onViewChange: (view: AllRoutes) => void }> = ({ onVie
 
 const MessagesView: React.FC = () => (
   <div className="space-y-6">
-    <h1 className="text-3xl font-bold text-gray-900">Mensagens</h1>
+    <h1 className="text-3xl font-bold text-indigo-600">Mensagens</h1>
     <div className="bg-white p-6 rounded-lg shadow-md">
       <p className="text-gray-500">Sistema de mensagens em desenvolvimento.</p>
     </div>

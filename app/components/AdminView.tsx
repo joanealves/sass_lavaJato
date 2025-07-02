@@ -87,7 +87,7 @@ const AdminView: React.FC<AdminViewProps> = ({
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Gerenciar Pedidos</h1>
+        <h1 className="text-3xl font-bold text-indigo-600">Gerenciar Pedidos</h1>
         
         <div className="flex items-center space-x-4">
           <select

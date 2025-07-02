@@ -54,7 +54,7 @@ const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder
             <Calendar className="text-purple-600 w-8 h-8" />
           </div>
           <div>
-            <h2 className="text-3xl font-bold text-gray-800">
+            <h2 className="text-3xl font-bold text-indigo-600">
               {isClientView ? 'Agendar sua Lavagem' : 'Gerenciar Agendamentos'}
             </h2>
             <p className="text-gray-500">

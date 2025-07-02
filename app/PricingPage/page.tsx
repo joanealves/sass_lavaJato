@@ -847,7 +847,7 @@ const PricingPlans: React.FC = () => {
     )}
 
     <footer className="text-center py-6 text-gray-400 text-sm border-t border-white/10 bg-slate-950">
-      Um Sistema feito por @Schema Desenvolvimento 2025
+     CarFlow - Um Sistema Saas - Desenvolvido por @Schema Desenvolvimento Web 2025
     </footer>
   </div>
   );
