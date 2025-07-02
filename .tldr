@@ -59,7 +59,7 @@
 			"props": {
 				"color": "black",
 				"size": "s",
-				"w": 1114.5025634765625,
+				"w": 1434.216064453125,
 				"font": "sans",
 				"textAlign": "start",
 				"autoSize": true,
@@ -273,9 +273,15 @@
 							"content": [
 								{
 									"type": "text",
-									"text": "criei tambem uma página de planos no momento está em app/pricingPage/page.tsx usa -la."
+									"text": "criei tambem uma página de planos no momento está em app/pricingPage/page.tsx usa -la. Já esta sendo usada na pagina de login e agora tem que usar no dsahboard admim"
 								}
 							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							}
 						},
 						{
 							"type": "paragraph",
@@ -299,9 +305,9 @@
 		{
 			"id": "pointer:pointer",
 			"typeName": "pointer",
-			"x": 842.4205932617188,
-			"y": 96.86198602782363,
-			"lastActivityTimestamp": 1751404256489,
+			"x": 1048.6853441730123,
+			"y": 193.5221174214476,
+			"lastActivityTimestamp": 1751418874890,
 			"meta": {}
 		},
 		{
@@ -365,9 +371,9 @@
 			"typeName": "instance_page_state"
 		},
 		{
-			"x": -170.58465576171872,
-			"y": 123.64582647217637,
-			"z": 1,
+			"x": 366.3369284221541,
+			"y": 422.728047897189,
+			"z": 0.5660706400101498,
 			"meta": {},
 			"id": "camera:page:page",
 			"typeName": "camera"
