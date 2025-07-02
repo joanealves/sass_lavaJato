@@ -36,9 +36,9 @@
 		{
 			"id": "pointer:pointer",
 			"typeName": "pointer",
-			"x": 456.0025939941406,
-			"y": 256.34112548828125,
-			"lastActivityTimestamp": 1751477108717,
+			"x": 524.84375,
+			"y": 209.67446899414062,
+			"lastActivityTimestamp": 1751491375415,
 			"meta": {}
 		},
 		{
@@ -60,6 +60,13 @@
 			"id": "instance_page_state:page:NJU5oVB782HxpgnG2b0NA",
 			"pageId": "page:NJU5oVB782HxpgnG2b0NA",
 			"typeName": "instance_page_state"
+		},
+		{
+			"meta": {},
+			"id": "page:9ZWv0mB7b4X3yTKVLKL2Z",
+			"name": "SEnhas mocadas",
+			"index": "a47Rj",
+			"typeName": "page"
 		},
 		{
 			"x": -252.52479553222702,
@@ -174,9 +181,9 @@
 			"typeName": "instance_page_state"
 		},
 		{
-			"x": 0,
-			"y": 0,
-			"z": 1,
+			"x": 6180.41650390625,
+			"y": 321.484436035156,
+			"z": 0.05,
 			"meta": {},
 			"id": "camera:page:NJU5oVB782HxpgnG2b0NA",
 			"typeName": "camera"
@@ -185,7 +192,7 @@
 			"editingShapeId": null,
 			"croppingShapeId": null,
 			"selectedShapeIds": [],
-			"hoveredShapeId": "shape:MgACRwVlqhPSKzN3UUrwv",
+			"hoveredShapeId": null,
 			"erasingShapeIds": [],
 			"hintingShapeIds": [],
 			"focusedGroupId": null,
@@ -1237,11 +1244,233 @@
 			"typeName": "shape"
 		},
 		{
+			"editingShapeId": null,
+			"croppingShapeId": null,
+			"selectedShapeIds": [
+				"shape:QtX991ALj98HzmvY7MGuo"
+			],
+			"hoveredShapeId": "shape:QtX991ALj98HzmvY7MGuo",
+			"erasingShapeIds": [],
+			"hintingShapeIds": [],
+			"focusedGroupId": null,
+			"meta": {},
+			"id": "instance_page_state:page:9ZWv0mB7b4X3yTKVLKL2Z",
+			"pageId": "page:9ZWv0mB7b4X3yTKVLKL2Z",
+			"typeName": "instance_page_state"
+		},
+		{
 			"meta": {},
 			"id": "page:NJU5oVB782HxpgnG2b0NA",
 			"name": "Planejamento Backend",
 			"index": "a33CF",
 			"typeName": "page"
+		},
+		{
+			"x": 106.85546875,
+			"y": 79.60285949707031,
+			"rotation": 0,
+			"isLocked": false,
+			"opacity": 1,
+			"meta": {},
+			"id": "shape:QtX991ALj98HzmvY7MGuo",
+			"type": "text",
+			"props": {
+				"color": "black",
+				"size": "m",
+				"w": 763.8255004882812,
+				"font": "sans",
+				"textAlign": "start",
+				"autoSize": true,
+				"scale": 1,
+				"richText": {
+					"type": "doc",
+					"content": [
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    id: '2',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    name: 'Maria Funcionária',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    email: 'funcionario@lava-jato.com',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    phone: '11987654322',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    senha: 'senha123',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    role: UserRole.EMPLOYEE,"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    permissions: DEFAULT_ROLE_PERMISSIONS[UserRole.EMPLOYEE],"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    createdAt: new Date()"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "  },"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "  {"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    id: '3',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    name: 'Carlos Admin',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    email: 'admin@lava-jato.com',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    phone: '11987654323',"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "    senha: 'admin123',"
+								}
+							]
+						}
+					]
+				}
+			},
+			"parentId": "page:9ZWv0mB7b4X3yTKVLKL2Z",
+			"index": "a1",
+			"typeName": "shape"
 		},
 		{
 			"x": 0,
@@ -10025,7 +10254,6 @@
 			"followingUserId": null,
 			"opacityForNextShape": 1,
 			"stylesForNextShape": {
-				"tldraw:size": "s",
 				"tldraw:font": "sans"
 			},
 			"brush": null,
@@ -10041,7 +10269,7 @@
 			"screenBounds": {
 				"x": 0,
 				"y": 0,
-				"w": 1305.833251953125,
+				"w": 683.3333129882812,
 				"h": 444.1666564941406
 			},
 			"insets": [
@@ -10059,15 +10287,23 @@
 			"isFocused": true,
 			"devicePixelRatio": 1.2000000476837158,
 			"isCoarsePointer": false,
-			"isHoveringCanvas": true,
+			"isHoveringCanvas": false,
 			"openMenus": [],
-			"isChangingStyle": false,
+			"isChangingStyle": true,
 			"isReadonly": false,
 			"meta": {},
 			"duplicateProps": null,
 			"id": "instance:instance",
-			"currentPageId": "page:NJU5oVB782HxpgnG2b0NA",
+			"currentPageId": "page:9ZWv0mB7b4X3yTKVLKL2Z",
 			"typeName": "instance"
+		},
+		{
+			"x": 0,
+			"y": 0,
+			"z": 1,
+			"meta": {},
+			"id": "camera:page:9ZWv0mB7b4X3yTKVLKL2Z",
+			"typeName": "camera"
 		},
 		{
 			"x": 277.9948425292969,

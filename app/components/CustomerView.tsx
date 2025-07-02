@@ -291,7 +291,6 @@ const CustomerView: React.FC<CustomerViewProps> = ({ currentOrder, setCurrentOrd
       setConfirmedOrder(orderWithCode);
       setShowConfirmation(true);
       
-      // Chama a função onSubmit passada como prop
       onSubmit(orderWithCode);
     }
   };
@@ -299,7 +298,6 @@ const CustomerView: React.FC<CustomerViewProps> = ({ currentOrder, setCurrentOrd
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);
     setConfirmedOrder(null);
-    // Reset do formulário usando setCurrentOrder
     setCurrentOrder({
       customerName: '',
       phone: '',

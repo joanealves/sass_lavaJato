@@ -16,11 +16,6 @@ import {
   Smartphone,
   Lock,
   ArrowLeft,
-  User,
-  Mail,
-  Phone,
-  Building,
-  MapPin
 } from 'lucide-react';
 
 interface PlanFeature {
@@ -38,7 +33,7 @@ interface Plan {
   price: number;
   originalPrice?: number;
   period: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   color: string;
   gradient: string;
   popular?: boolean;
@@ -249,9 +244,7 @@ const CheckoutModal: React.FC<{
   const processPayment = async () => {
     setLoading(true);
     
-    // Simular processamento do pagamento
     try {
-      // Aqui você faria a integração real com Mercado Pago
       const paymentData = {
         customer: customerData,
         plan: plan.id,
@@ -262,13 +255,12 @@ const CheckoutModal: React.FC<{
 
       console.log('Processando pagamento:', paymentData);
 
-      // Simular API call
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       if (paymentMethod === 'pix') {
-        setStep(4); // Mostrar QR Code PIX
+        setStep(4); 
       } else {
-        setStep(5); // Mostrar sucesso
+        setStep(5); 
       }
     } catch (error) {
       console.error('Erro no pagamento:', error);

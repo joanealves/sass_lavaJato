@@ -273,16 +273,6 @@ const OrderTimeline: React.FC<{ order: Order }> = ({ order }) => {
     return 'Data inválida';
   };
 
-  const getStatusText = (status: OrderStatus): string => { 
-    switch (status) {
-      case OrderStatus.WAITING: return 'Aguardando';
-      case OrderStatus.IN_PROGRESS: return 'Em Andamento';
-      case OrderStatus.READY: return 'Pronto';
-      case OrderStatus.COMPLETED: return 'Finalizado';
-      default: return status;
-    }
-  };
-
   return (
     <div className="space-y-4 mb-6">
       <h4 className="font-semibold text-gray-700">Linha do Tempo</h4>

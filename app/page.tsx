@@ -15,6 +15,7 @@ import {
   OrderStatus, 
   CurrentOrder, 
   ServiceType,
+  PaymentStatus,
 } from './types/orders';
 import { UserRole } from './types/auth';
 import { AllRoutes } from './types/routes';
@@ -57,6 +58,7 @@ const AppContent: React.FC = () => {
           serviceType: ServiceType.SIMPLE,
           extraServices: ['polimento'],
           status: OrderStatus.COMPLETED,
+          paymentStatus: PaymentStatus.PAID,
           totalPrice: 100,
           createdAt: new Date('2023-01-15T10:00:00Z'),
           readyAt: new Date('2023-01-15T11:00:00Z'),
@@ -72,6 +74,7 @@ const AppContent: React.FC = () => {
           serviceType: ServiceType.COMPLETE,
           extraServices: [],
           status: OrderStatus.IN_PROGRESS,
+          paymentStatus: PaymentStatus.PENDING,
           totalPrice: 50,
           createdAt: new Date('2023-01-16T14:00:00Z'),
         },
@@ -85,6 +88,7 @@ const AppContent: React.FC = () => {
           serviceType: ServiceType.COMPLETE,
           extraServices: ['enceramento'],
           status: OrderStatus.WAITING,
+          paymentStatus: PaymentStatus.PENDING,
           totalPrice: 80,
           createdAt: new Date(),
         },
@@ -135,6 +139,7 @@ const AppContent: React.FC = () => {
       serviceType: currentOrderData.serviceType,
       extraServices: currentOrderData.extraServices,
       status: OrderStatus.PENDING,
+      paymentStatus: PaymentStatus.PENDING,
       totalPrice: calculateOrderPrice(currentOrderData),
       createdAt: new Date(),
     };
@@ -422,8 +427,6 @@ const FinancialView: React.FC<{ orders: Order[] }> = ({ orders }) => (
 
   
 );
-
-
 
 const AccessDeniedView: React.FC = () => (
   <div className="text-center py-12">

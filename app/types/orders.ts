@@ -17,6 +17,22 @@ export enum ServiceType {
   DETAILED = 'DETAILED'
 }
 
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  PAID = 'PAID',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED',
+  REFUNDED = 'REFUNDED'
+}
+
+export enum PaymentMethod {
+  PIX = 'PIX',
+  CREDIT_CARD = 'CREDIT_CARD',
+  DEBIT_CARD = 'DEBIT_CARD',
+  CASH = 'CASH'
+}
+
 export interface Order {
   id: string;
   customerName: string;
@@ -32,6 +48,8 @@ export interface Order {
   updatedAt?: Date;
   readyAt?: Date | null;
   completedAt?: Date;
+  paymentStatus: PaymentStatus;
+  paymentMethod?: PaymentMethod;
 }
 
 export interface CurrentOrder {

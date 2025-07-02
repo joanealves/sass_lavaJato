@@ -1,37 +1,10 @@
 import React, { useState } from 'react';
 import { CreditCard, DollarSign, Clock, CheckCircle, AlertCircle, QrCode } from 'lucide-react';
-import { Order, OrderStatus } from '../types/orders';
+import { Order, OrderStatus, PaymentStatus, PaymentMethod } from '../types/orders';
 
 interface PaymentSystemProps {
   orders: Order[];
   onUpdatePaymentStatus: (orderId: string, paymentStatus: PaymentStatus, paymentMethod: PaymentMethod) => void;
-}
-
-export enum PaymentStatus {
-  PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  PAID = 'PAID',
-  FAILED = 'FAILED',
-  CANCELLED = 'CANCELLED'
-}
-
-export enum PaymentMethod {
-  PIX = 'PIX',
-  CREDIT_CARD = 'CREDIT_CARD',
-  DEBIT_CARD = 'DEBIT_CARD',
-  CASH = 'CASH'
-}
-
-interface PaymentInfo {
-  id: string;
-  orderId: string;
-  amount: number;
-  method: PaymentMethod;
-  status: PaymentStatus;
-  createdAt: Date;
-  paidAt?: Date;
-  pixCode?: string;
-  transactionId?: string;
 }
 
 const serviceTypes = [
@@ -67,6 +40,8 @@ const getPaymentStatusColor = (status: PaymentStatus): string => {
       return 'bg-red-100 text-red-800 border-red-300';
     case PaymentStatus.CANCELLED:
       return 'bg-gray-100 text-gray-800 border-gray-300';
+    case PaymentStatus.REFUNDED:
+      return 'bg-purple-100 text-purple-800 border-purple-300';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-300';
   }
@@ -84,6 +59,8 @@ const getPaymentStatusText = (status: PaymentStatus): string => {
       return 'Falhou';
     case PaymentStatus.CANCELLED:
       return 'Cancelado';
+    case PaymentStatus.REFUNDED:
+      return 'Reembolsado';
     default:
       return status;
   }
@@ -100,6 +77,21 @@ const getPaymentMethodIcon = (method: PaymentMethod) => {
       return <DollarSign className="w-5 h-5" />;
     default:
       return <DollarSign className="w-5 h-5" />;
+  }
+};
+
+const getPaymentMethodText = (method: PaymentMethod): string => {
+  switch (method) {
+    case PaymentMethod.PIX:
+      return 'PIX';
+    case PaymentMethod.CREDIT_CARD:
+      return 'Cartão de Crédito';
+    case PaymentMethod.DEBIT_CARD:
+      return 'Cartão de Débito';
+    case PaymentMethod.CASH:
+      return 'Dinheiro';
+    default:
+      return method;
   }
 };
 
@@ -121,7 +113,7 @@ const PaymentCard: React.FC<{
 }> = ({ order, onUpdatePaymentStatus }) => {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(PaymentMethod.PIX);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>(PaymentStatus.PENDING);
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>(order.paymentStatus);
   const [pixCode] = useState(`PIX${order.id}${Date.now()}`);
   
   const total = calculateOrderTotal(order);
@@ -140,6 +132,7 @@ const PaymentCard: React.FC<{
         setPaymentStatus(newStatus);
         onUpdatePaymentStatus(order.id, newStatus, selectedMethod);
       }
+      setShowPaymentModal(false);
     }, 2000);
   };
 
@@ -178,12 +171,7 @@ const PaymentCard: React.FC<{
                 />
                 <div className="flex items-center gap-2">
                   {getPaymentMethodIcon(method)}
-                  <span>
-                    {method === PaymentMethod.PIX ? 'PIX' :
-                     method === PaymentMethod.CREDIT_CARD ? 'Cartão de Crédito' :
-                     method === PaymentMethod.DEBIT_CARD ? 'Cartão de Débito' :
-                     'Dinheiro'}
-                  </span>
+                  <span>{getPaymentMethodText(method)}</span>
                 </div>
               </label>
             ))}
@@ -247,6 +235,7 @@ const PaymentCard: React.FC<{
           <div>
             <h3 className="text-lg font-bold text-gray-800">Pedido #{order.id}</h3>
             <p className="text-sm text-gray-600">{order.customerName}</p>
+            <p className="text-xs text-gray-500">{order.carModel} - {order.carPlate}</p>
           </div>
           <div className={`px-3 py-1 rounded-full border ${getPaymentStatusColor(paymentStatus)}`}>
             {getPaymentStatusText(paymentStatus)}
@@ -255,7 +244,21 @@ const PaymentCard: React.FC<{
 
         <div className="mb-4">
           <p className="text-sm text-gray-600">Serviço: {service?.name}</p>
+          {order.extraServices.length > 0 && (
+            <p className="text-xs text-gray-500">
+              Extras: {order.extraServices.map(extraId => {
+                const extra = extraServices.find(e => e.id === extraId);
+                return extra?.name;
+              }).filter(Boolean).join(', ')}
+            </p>
+          )}
           <p className="text-lg font-bold text-blue-600">{formatCurrency(total)}</p>
+          {order.paymentMethod && (
+            <div className="flex items-center gap-1 mt-1 text-sm text-gray-600">
+              {getPaymentMethodIcon(order.paymentMethod)}
+              <span>{getPaymentMethodText(order.paymentMethod)}</span>
+            </div>
+          )}
         </div>
 
         <div className="flex gap-2">
@@ -278,6 +281,13 @@ const PaymentCard: React.FC<{
               Tentar Novamente
             </button>
           )}
+
+          {paymentStatus === PaymentStatus.PAID && (
+            <div className="flex items-center gap-2 text-green-600">
+              <CheckCircle className="w-4 h-4" />
+              <span className="text-sm font-medium">Pagamento confirmado</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -295,15 +305,17 @@ const PaymentSystem: React.FC<PaymentSystemProps> = ({ orders, onUpdatePaymentSt
 
   const filteredOrders = paymentOrders.filter(order => {
     if (filterStatus === 'all') return true;
-    // Aqui você precisaria adicionar status de pagamento ao Order type
-    return true; 
+    return order.paymentStatus === filterStatus;
   });
 
   const totalRevenue = paymentOrders.reduce((total, order) => {
     return total + calculateOrderTotal(order);
   }, 0);
 
-  const paidRevenue = paymentOrders.length * 0.7 * (totalRevenue / paymentOrders.length); 
+  const paidRevenue = paymentOrders
+    .filter(order => order.paymentStatus === PaymentStatus.PAID)
+    .reduce((total, order) => total + calculateOrderTotal(order), 0);
+  
   const pendingRevenue = totalRevenue - paidRevenue;
 
   return (
@@ -312,6 +324,20 @@ const PaymentSystem: React.FC<PaymentSystemProps> = ({ orders, onUpdatePaymentSt
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Sistema de Pagamentos</h2>
+            <div className="flex gap-2">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value as 'all' | PaymentStatus)}
+                className="px-3 py-1 border border-gray-300 rounded-lg text-sm"
+              >
+                <option value="all">Todos</option>
+                <option value={PaymentStatus.PENDING}>Pendente</option>
+                <option value={PaymentStatus.PROCESSING}>Processando</option>
+                <option value={PaymentStatus.PAID}>Pago</option>
+                <option value={PaymentStatus.FAILED}>Falhou</option>
+                <option value={PaymentStatus.CANCELLED}>Cancelado</option>
+              </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -343,8 +369,12 @@ const PaymentSystem: React.FC<PaymentSystemProps> = ({ orders, onUpdatePaymentSt
           {filteredOrders.length === 0 ? (
             <div className="text-center py-12">
               <CreditCard className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-600 mb-2">Nenhum pagamento pendente</h3>
-              <p className="text-gray-500">Todos os pagamentos estão em dia!</p>
+              <h3 className="text-lg font-medium text-gray-600 mb-2">
+                {filterStatus === 'all' ? 'Nenhum pagamento pendente' : `Nenhum pedido com status "${getPaymentStatusText(filterStatus as PaymentStatus)}"`}
+              </h3>
+              <p className="text-gray-500">
+                {filterStatus === 'all' ? 'Todos os pagamentos estão em dia!' : 'Tente filtrar por outro status.'}
+              </p>
             </div>
           ) : (
             <div className="space-y-4">

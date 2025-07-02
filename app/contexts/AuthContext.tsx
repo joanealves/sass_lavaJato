@@ -62,8 +62,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       );
 
       if (foundUser) {
-        const { senha, ...userWithoutPassword } = foundUser;
+        const { senha: _senha, ...userWithoutPassword } = foundUser;
         setUser(userWithoutPassword);
+        console.log('senha', _senha)
         return true;
       }
       
@@ -99,8 +100,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       };
 
       DEMO_USERS.push(newUser);
-      const { senha, ...userWithoutPassword } = newUser;
+      const { senha: _senha, ...userWithoutPassword } = newUser;
       setUser(userWithoutPassword);
+      console.log('senha', _senha)
       return true;
     } catch (error) {
       console.error('Erro no registro:', error);

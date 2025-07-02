@@ -64,15 +64,10 @@ const Navigation: React.FC<NavigationProps> = ({
     return iconMap[path] || Home;
   };
 
-  // Filtrar itens de navegação: remover login, register e scheduling (agendamento) para usuários logados
   const filteredNavigationItems = navigationItems.filter(item => {
-    // Sempre remover login e register da navegação principal
     if (['register', 'login'].includes(item.path)) {
       return false;
     }
-    
-    // Se o usuário está logado, remover também o "scheduling" (agendamento público)
-    // pois já têm acesso aos seus respectivos schedulings (employee-scheduling, admin-scheduling)
     if (userRole !== UserRole.PUBLIC && item.path === 'scheduling') {
       return false;
     }
