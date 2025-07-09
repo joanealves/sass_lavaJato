@@ -185,7 +185,7 @@ const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder
                 id="customerName"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Nome Completo"
                 required
               />
@@ -197,7 +197,7 @@ const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder
                 id="phone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="(XX) XXXXX-XXXX"
                 required
               />
@@ -209,7 +209,7 @@ const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder
                 id="carModel"
                 value={carModel}
                 onChange={(e) => setCarModel(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Ex: Fiat Palio"
                 required
               />
@@ -221,7 +221,7 @@ const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder
                 id="carPlate"
                 value={carPlate}
                 onChange={(e) => setCarPlate(e.target.value.toUpperCase())}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Ex: ABC1D23"
                 required
               />
@@ -232,7 +232,7 @@ const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder
                 id="serviceType"
                 value={serviceType}
                 onChange={(e) => setServiceType(e.target.value as ServiceType)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
                 required
               >
                 <option value={ServiceType.SIMPLE}>Lavagem Simples</option>
@@ -249,7 +249,7 @@ const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder
                   id="scheduledDate"
                   value={scheduledDate}
                   onChange={(e) => setScheduledDate(e.target.value)}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
                   required
                 />
               </div>
@@ -260,7 +260,7 @@ const SchedulingSystem: React.FC<SchedulingSystemProps> = ({ onAddScheduledOrder
                   id="scheduledTime"
                   value={scheduledTime}
                   onChange={(e) => setScheduledTime(e.target.value)}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
                   required
                 />
               </div>

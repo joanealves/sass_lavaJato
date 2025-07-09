@@ -184,32 +184,32 @@ ${selectedExtras.map(extra => `• ${extra.name} - ${extra.price}`).join('\n')}`
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Cliente:</span>
-                  <span className="font-medium">{order.customerName}</span>
+                  <span className="font-medium text-gray-500">{order.customerName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Telefone:</span>
-                  <span className="font-medium">{order.phone}</span>
+                  <span className="font-medium text-gray-500">{order.phone}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Veículo:</span>
-                  <span className="font-medium">{order.carModel}</span>
+                  <span className="font-medium text-gray-500">{order.carModel}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Placa:</span>
-                  <span className="font-medium">{order.carPlate}</span>
+                  <span className="font-medium text-gray-500">{order.carPlate}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Serviço:</span>
-                  <span className="font-medium">{selectedService?.name}</span>
+                  <span className="font-medium text-gray-500">{selectedService?.name}</span>
                 </div>
                 {selectedExtras.length > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">Extras:</span>
-                    <span className="font-medium">{selectedExtras.length} serviço(s)</span>
+                    <span className="font-medium text-gray-500">{selectedExtras.length} serviço(s)</span>
                   </div>
                 )}
                 <div className="border-t pt-2 mt-2 flex justify-between font-bold">
-                  <span>Total:</span>
+                  <span className='text-green-600'>Total:</span>
                   <span className="text-green-600">
                     {calculateTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </span>
@@ -233,7 +233,6 @@ ${selectedExtras.map(extra => `• ${extra.name} - ${extra.price}`).join('\n')}`
   );
 };
 
-// Componente principal com as props corretas
 const CustomerView: React.FC<CustomerViewProps> = ({ currentOrder, setCurrentOrder, onSubmit }) => {
   const [showConfirmation, setShowConfirmation] = React.useState(false);
   const [confirmedOrder, setConfirmedOrder] = React.useState<CurrentOrder | null>(null);
